@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f4f4f4;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem 0;
+  width: 100%;
+  text-align: center;
+}
+
+main {
+  margin-top: 2rem;
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+}
+
+#card {
+  border: 1px solid #ccc;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  background: #fff;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.2rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #ddd;
+}
