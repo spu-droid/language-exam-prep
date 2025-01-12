@@ -22,6 +22,7 @@ const words = [
 
 // DOM Elements
 const card = document.getElementById("card");
+const wordCount = document.getElementById("word-count");
 const showAnswerButton = document.getElementById("show-answer");
 const easyButton = document.getElementById("easy");
 const mediumButton = document.getElementById("medium");
@@ -39,6 +40,11 @@ function displayWord() {
     return;
   }
   card.innerHTML = `<p>${showAnswer ? currentDeck[currentIndex].meaning : currentDeck[currentIndex].word}</p>`;
+}
+
+// Function to update word count
+function updateWordCount() {
+  wordCount.textContent = `Words in total: ${currentDeck.length}`;
 }
 
 // Event listener for "Show Answer" button
@@ -69,14 +75,4 @@ deckButtons.forEach((button) => {
     e.target.classList.add("active");
 
     // Filter words for the selected deck
-    currentDeck = words.filter((word) => word.categories.includes(selectedDeck));
-    currentIndex = 0;
-    showAnswer = false;
-
-    // Display the first word
-    displayWord();
-  });
-});
-
-// Initialize with a default message
-displayWord();
+    currentDeck = words.filter((word) => word.categories.includes(selecte

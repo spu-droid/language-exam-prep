@@ -54,3 +54,15 @@ button.active {
   justify-content: center;
   gap: 10px;
 }
+
+#word-count {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.5);
+}
