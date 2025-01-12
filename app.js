@@ -75,4 +75,16 @@ deckButtons.forEach((button) => {
     e.target.classList.add("active");
 
     // Filter words for the selected deck
-    currentDeck = words.filter((word) => word.categories.includes(selecte
+    currentDeck = words.filter((word) => word.categories.includes(selectedDeck));
+    currentIndex = 0;
+    showAnswer = false;
+
+    // Update word count and display the first word
+    updateWordCount();
+    displayWord();
+  });
+});
+
+// Initialize with a default message
+updateWordCount();
+displayWord();
