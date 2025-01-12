@@ -13,6 +13,21 @@ body {
 header {
   background: #333;
   padding: 1rem 0;
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #121212;
+  color: #fff;
+}
+
+header {
+  background: #333;
+  padding: 1rem 0;
   width: 100%;
   text-align: center;
   color: #00aaff;
@@ -56,4 +71,11 @@ button:hover {
 
 #deck {
   display: none;
+}
+
+/* Highlight active deck button */
+.deck-btn.active {
+  background: #666;
+  color: #fff;
+  font-weight: bold;
 }
