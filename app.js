@@ -10,10 +10,11 @@ const firebaseConfig = {
   measurementId: "G-HLEJ2829GR"
 };
 
-// Initialize Firebase
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get } from "firebase/database";
+// Import Firebase libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -21,10 +22,8 @@ const database = getDatabase(app);
 const deckButtons = document.querySelectorAll(".deck-btn");
 const cardElement = document.getElementById("card");
 const wordCountElement = document.getElementById("word-count");
-const showAnswerButton = document.getElementById("show-answer");
-const switchButton = document.getElementById("switch");
-const controls = document.getElementById("controls");
 
+// Variables to track state
 let currentDeck = [];
 let currentIndex = 0;
 let showAnswer = false;
@@ -38,7 +37,7 @@ const fetchWords = async (category) => {
       const words = Object.values(snapshot.val());
       return category === "all"
         ? words
-        : words.filter((word) => word.category === category);
+        : words.filter((word) => word.category.toLowerCase() === category.toLowerCase());
     }
     return [];
   } catch (error) {
@@ -51,16 +50,13 @@ const fetchWords = async (category) => {
 const updateFlashcard = () => {
   if (currentDeck.length === 0) {
     cardElement.innerHTML = "<p>No words in this deck!</p>";
+    wordCountElement.innerHTML = "Words in total: 0";
     return;
   }
 
   const word = currentDeck[currentIndex];
   cardElement.innerHTML = `<p>${showAnswer ? word.german : word.italian}</p>`;
-};
-
-// Function to update word count
-const updateWordCount = () => {
-  wordCountElement.textContent = `Words in total: ${currentDeck.length}`;
+  wordCountElement.innerHTML = `Words in total: ${currentDeck.length}`;
 };
 
 // Function to highlight the active deck button
@@ -79,19 +75,18 @@ deckButtons.forEach((button) => {
     currentIndex = 0;
     showAnswer = false;
     updateFlashcard();
-    updateWordCount();
     highlightActiveDeck(button);
   });
 });
 
 // Event listener for "Show Answer" button
-showAnswerButton.addEventListener("click", () => {
+document.getElementById("show-answer").addEventListener("click", () => {
   showAnswer = !showAnswer;
   updateFlashcard();
 });
 
 // Event listener for "Switch" button
-switchButton.addEventListener("click", () => {
+document.getElementById("switch").addEventListener("click", () => {
   if (currentDeck.length > 0) {
     currentIndex = (currentIndex + 1) % currentDeck.length;
     showAnswer = false;
