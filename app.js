@@ -25,7 +25,7 @@ const deckButtons = document.querySelectorAll(".deck-btn");
 
 let currentDeck = [];
 let currentIndex = 0;
-let isItalianToGerman = true; // Default language direction
+let isGermanToItalian = true; // Default language direction
 let words = []; // Words from Firebase
 
 // Function to display a word
@@ -35,7 +35,14 @@ function displayWord() {
     return;
   }
   const word = currentDeck[currentIndex];
-  card.innerHTML = `<p>${isItalianToGerman ? word.italian : word.german}</p>`;
+  card.innerHTML = `<p>${isGermanToItalian ? word.german : word.italian}</p>`;
+}
+
+// Function to show the answer
+function showAnswer() {
+  if (currentDeck.length === 0) return;
+  const word = currentDeck[currentIndex];
+  card.innerHTML = `<p>${isGermanToItalian ? word.italian : word.german}</p>`;
 }
 
 // Function to update word count
@@ -58,29 +65,22 @@ function fetchWords() {
     .catch((error) => console.error("Error fetching words:", error));
 }
 
-// Event listener for "Show Answer" button
-showAnswerButton.addEventListener("click", () => {
+// Function to move to the next word
+function nextWord() {
   if (currentDeck.length === 0) return;
-  const word = currentDeck[currentIndex];
-  card.innerHTML = `<p>${isItalianToGerman ? word.german : word.italian}</p>`;
-});
-
-// Event listener for "Switch" button
-switchButton.addEventListener("click", () => {
-  isItalianToGerman = !isItalianToGerman;
-  displayWord();
-});
-
-// Function to select the next card
-function nextCard() {
   currentIndex = (currentIndex + 1) % currentDeck.length;
   displayWord();
 }
 
 // Event listeners for controls
-easyButton.addEventListener("click", nextCard);
-mediumButton.addEventListener("click", nextCard);
-hardButton.addEventListener("click", nextCard);
+showAnswerButton.addEventListener("click", showAnswer);
+switchButton.addEventListener("click", () => {
+  isGermanToItalian = !isGermanToItalian;
+  displayWord();
+});
+easyButton.addEventListener("click", nextWord);
+mediumButton.addEventListener("click", nextWord);
+hardButton.addEventListener("click", nextWord);
 
 // Handle deck selection
 deckButtons.forEach((button) => {
@@ -93,7 +93,7 @@ deckButtons.forEach((button) => {
 
     // Filter words for the selected deck
     currentDeck = words.filter((word) => {
-      return word.categories && word.categories.includes(selectedDeck);
+      return word.category && word.category.toLowerCase() === selectedDeck.toLowerCase();
     });
 
     currentIndex = 0;
