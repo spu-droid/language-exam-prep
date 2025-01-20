@@ -62,9 +62,9 @@ const updateFlashcard = () => {
 // Function to highlight the active deck button
 const highlightActiveDeck = (activeButton) => {
   deckButtons.forEach((button) => {
-    button.classList.remove("active");
+    button.classList.remove("active"); // Remove active class from all buttons
   });
-  activeButton.classList.add("active");
+  activeButton.classList.add("active"); // Add active class to the clicked button
 };
 
 // Event listeners for deck buttons
@@ -75,7 +75,7 @@ deckButtons.forEach((button) => {
     currentIndex = 0;
     showAnswer = false;
     updateFlashcard();
-    highlightActiveDeck(button);
+    highlightActiveDeck(button); // Highlight the clicked button
   });
 });
 
