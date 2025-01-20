@@ -88,8 +88,8 @@ deckButtons.forEach((button) => {
     const selectedDeck = e.target.getAttribute("data-deck");
 
     // Highlight the active button
-    deckButtons.forEach((btn) => btn.classList.remove("active"));
-    e.target.classList.add("active");
+    deckButtons.forEach((btn) => btn.classList.remove("active")); // Clear previous selection
+    e.target.classList.add("active"); // Set the clicked button as active
 
     // Filter words for the selected deck
     currentDeck = words.filter((word) => {
@@ -108,3 +108,4 @@ deckButtons.forEach((button) => {
 fetchWords();
 updateWordCount();
 displayWord();
+
