@@ -1,95 +1,106 @@
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
-  authDomain: "language-exam-prep-6698a.firebaseapp.com",
-  databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
-  projectId: "language-exam-prep-6698a",
-  storageBucket: "language-exam-prep-6698a.firebasestorage.app",
-  messagingSenderId: "858022856301",
-  appId: "1:858022856301:web:c416c22f250679783c6164",
-  measurementId: "G-HLEJ2829GR"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
 };
-
-// Import Firebase libraries
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // DOM Elements
+const card = document.getElementById("card");
+const wordCount = document.getElementById("word-count");
+const showAnswerButton = document.getElementById("show-answer");
+const switchButton = document.getElementById("switch");
+const easyButton = document.getElementById("easy");
+const mediumButton = document.getElementById("medium");
+const hardButton = document.getElementById("hard");
 const deckButtons = document.querySelectorAll(".deck-btn");
-const cardElement = document.getElementById("card");
-const wordCountElement = document.getElementById("word-count");
 
-// Variables to track state
 let currentDeck = [];
 let currentIndex = 0;
-let showAnswer = false;
+let isItalianToGerman = true; // Default language direction
+let words = []; // Words from Firebase
 
-// Function to fetch words from Firebase
-const fetchWords = async (category) => {
-  try {
-    const wordsRef = ref(database, "words");
-    const snapshot = await get(wordsRef);
-    if (snapshot.exists()) {
-      const words = Object.values(snapshot.val());
-      return category === "all"
-        ? words
-        : words.filter((word) => word.category.toLowerCase() === category.toLowerCase());
-    }
-    return [];
-  } catch (error) {
-    console.error("Error fetching words:", error);
-    return [];
-  }
-};
-
-// Function to update the flashcard
-const updateFlashcard = () => {
+// Function to display a word
+function displayWord() {
   if (currentDeck.length === 0) {
-    cardElement.innerHTML = "<p>No words in this deck!</p>";
-    wordCountElement.innerHTML = "Words in total: 0";
+    card.innerHTML = "<p>No words in this deck!</p>";
     return;
   }
-
   const word = currentDeck[currentIndex];
-  cardElement.innerHTML = `<p>${showAnswer ? word.german : word.italian}</p>`;
-  wordCountElement.innerHTML = `Words in total: ${currentDeck.length}`;
-};
+  card.innerHTML = `<p>${isItalianToGerman ? word.italian : word.german}</p>`;
+}
 
-// Function to highlight the active deck button
-const highlightActiveDeck = (activeButton) => {
-  deckButtons.forEach((button) => {
-    button.classList.remove("active"); // Remove active class from all buttons
-  });
-  activeButton.classList.add("active"); // Add active class to the clicked button
-};
+// Function to update word count
+function updateWordCount() {
+  wordCount.textContent = `Words in total: ${currentDeck.length}`;
+}
 
-// Event listeners for deck buttons
-deckButtons.forEach((button) => {
-  button.addEventListener("click", async () => {
-    const category = button.getAttribute("data-deck");
-    currentDeck = await fetchWords(category === "all" ? "all" : category);
-    currentIndex = 0;
-    showAnswer = false;
-    updateFlashcard();
-    highlightActiveDeck(button); // Highlight the clicked button
-  });
-});
+// Fetch words from Firebase
+function fetchWords() {
+  database
+    .ref("words")
+    .once("value")
+    .then((snapshot) => {
+      words = [];
+      snapshot.forEach((childSnapshot) => {
+        words.push(childSnapshot.val());
+      });
+      console.log("Words loaded:", words);
+    })
+    .catch((error) => console.error("Error fetching words:", error));
+}
 
 // Event listener for "Show Answer" button
-document.getElementById("show-answer").addEventListener("click", () => {
-  showAnswer = !showAnswer;
-  updateFlashcard();
+showAnswerButton.addEventListener("click", () => {
+  const word = currentDeck[currentIndex];
+  card.innerHTML = `<p>${isItalianToGerman ? word.german : word.italian}</p>`;
 });
 
 // Event listener for "Switch" button
-document.getElementById("switch").addEventListener("click", () => {
-  if (currentDeck.length > 0) {
-    currentIndex = (currentIndex + 1) % currentDeck.length;
-    showAnswer = false;
-    updateFlashcard();
-  }
+switchButton.addEventListener("click", () => {
+  isItalianToGerman = !isItalianToGerman;
+  displayWord();
 });
+
+// Function to select the next card
+function nextCard() {
+  currentIndex = (currentIndex + 1) % currentDeck.length;
+  displayWord();
+}
+
+// Event listeners for controls
+easyButton.addEventListener("click", nextCard);
+mediumButton.addEventListener("click", nextCard);
+hardButton.addEventListener("click", nextCard);
+
+// Handle deck selection
+deckButtons.forEach((button) => {
+  button.addEventListener("click", (e) => {
+    const selectedDeck = e.target.getAttribute("data-deck");
+
+    // Highlight the active button
+    deckButtons.forEach((btn) => btn.classList.remove("active"));
+    e.target.classList.add("active");
+
+    // Filter words for the selected deck
+    currentDeck = words.filter((word) => word.categories.includes(selectedDeck));
+    currentIndex = 0;
+
+    // Update word count and display the first word
+    updateWordCount();
+    displayWord();
+  });
+});
+
+// Initialize app
+fetchWords();
+updateWordCount();
+displayWord();
