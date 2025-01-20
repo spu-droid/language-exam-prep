@@ -45,7 +45,7 @@ function updateWordCount() {
   const count =
     currentDeck === "all"
       ? words.length
-      : words.filter((word) => word.category === currentDeck).length;
+      : words.filter((word) => word.category.toLowerCase() === currentDeck).length;
   wordCountElement.textContent = `Words in total: ${count}`;
 }
 
@@ -54,7 +54,7 @@ function showNextCard() {
   const deckWords =
     currentDeck === "all"
       ? words
-      : words.filter((word) => word.category === currentDeck);
+      : words.filter((word) => word.category.toLowerCase() === currentDeck);
 
   if (deckWords.length > 0) {
     const word = deckWords[currentCardIndex % deckWords.length];
@@ -79,7 +79,7 @@ showAnswerButton.addEventListener("click", () => {
   const deckWords =
     currentDeck === "all"
       ? words
-      : words.filter((word) => word.category === currentDeck);
+      : words.filter((word) => word.category.toLowerCase() === currentDeck);
 
   if (deckWords.length > 0) {
     const word = deckWords[currentCardIndex % deckWords.length];
