@@ -18,29 +18,32 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 // Reference to words in the database
-const wordsRef = ref(database, 'words');
+const wordsRef = ref(database, "words");
 
-// Fetch words and display them
+// HTML elements
+const deckButtons = document.querySelectorAll(".deck-btn");
+const card = document.getElementById("card");
+const wordCount = document.getElementById("word-count");
+const switchButton = document.getElementById("switch");
+
+// Variables
+let currentDeck = [];
+let currentWordIndex = 0;
+let showGerman = true; // Toggle between German and Italian
+
+// Fetch words from Firebase
 onValue(wordsRef, (snapshot) => {
     const words = snapshot.val();
     if (words) {
-        // Example: Display the first word in the console
         console.log("Words loaded:", words);
-        populateDecks(words);
+        setupDecks(words);
     } else {
         console.log("No words found in the database.");
     }
 });
 
-// Populate decks with words
-function populateDecks(words) {
-    const deckButtons = document.querySelectorAll(".deck-btn");
-    const card = document.getElementById("card");
-    const wordCount = document.getElementById("word-count");
-
-    let currentDeck = [];
-    let currentWordIndex = 0;
-
+// Setup decks and event listeners
+function setupDecks(words) {
     deckButtons.forEach((button) => {
         button.addEventListener("click", () => {
             const category = button.getAttribute("data-deck");
@@ -52,14 +55,22 @@ function populateDecks(words) {
         });
     });
 
-    function updateCard() {
-        if (currentDeck.length > 0) {
-            card.textContent = currentDeck[currentWordIndex].german; // Show German by default
-            wordCount.textContent = `Words in total: ${currentDeck.length}`;
-        } else {
-            card.textContent = "No words in this deck!";
-            wordCount.textContent = "Words in total: 0";
-        }
+    // Switch button functionality
+    switchButton.addEventListener("click", () => {
+        showGerman = !showGerman; // Toggle between German and Italian
+        updateCard();
+    });
+}
+
+// Update the card with the current word
+function updateCard() {
+    if (currentDeck.length > 0) {
+        const word = currentDeck[currentWordIndex];
+        card.textContent = showGerman ? word.german : word.italian;
+        wordCount.textContent = `Words in total: ${currentDeck.length}`;
+    } else {
+        card.textContent = "No words in this deck!";
+        wordCount.textContent = "Words in total: 0";
     }
 }
 
