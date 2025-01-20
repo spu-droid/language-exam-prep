@@ -37,7 +37,7 @@ function displayWord() {
   card.innerHTML = `<p>${isItalianToGerman ? word.italian : word.german}</p>`;
 }
 
-// Function to update word count
+// Function to update word count .
 function updateWordCount() {
   wordCount.textContent = `Words in total: ${currentDeck.length}`;
 }
