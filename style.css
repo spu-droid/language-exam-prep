@@ -36,8 +36,9 @@ button:hover {
 }
 
 button.active {
-  background: #ccc;
+  background: #ddd; /* Slightly darker background for active button */
   font-weight: bold;
+  border: 2px solid #888; /* Subtle border to distinguish active button */
 }
 
 #card {
