@@ -1,17 +1,17 @@
-// Sample word dataset
-const words = [
-  { italian: "mare", german: "Meer", categories: ["nouns", "all"] },
-  { italian: "festa", german: "Fest", categories: ["nouns", "all"] },
-  { italian: "due", german: "zwei", categories: ["numbers", "all"] },
-  { italian: "dialogo", german: "Dialog", categories: ["nouns", "all"] },
-  { italian: "ascoltare", german: "hören", categories: ["verbs", "all"] },
-  { italian: "città", german: "Stadt", categories: ["nouns", "all"] },
-  { italian: "cane", german: "Hund", categories: ["animals", "nouns", "all"] },
-  { italian: "grazie", german: "danke", categories: ["phrases", "all"] },
-  { italian: "arrivederci", german: "auf Wiedersehen", categories: ["phrases", "all"] },
-  { italian: "vino", german: "Wein", categories: ["food", "all"] },
-  { italian: "pane", german: "Brot", categories: ["food", "all"] },
-];
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // DOM Elements
 const card = document.getElementById("card");
@@ -22,10 +22,23 @@ const easyButton = document.getElementById("easy");
 const mediumButton = document.getElementById("medium");
 const hardButton = document.getElementById("hard");
 const deckButtons = document.querySelectorAll(".deck-btn");
+const flashcardsTitle = document.getElementById("flashcards-title");
 
 let currentDeck = [];
 let currentIndex = 0;
 let isItalianToGerman = true; // Default language direction
+
+// Fetch words from Firebase Database
+async function fetchWords(category) {
+  const snapshot = await database.ref("words").once("value");
+  const words = snapshot.val();
+
+  // Filter words by category
+  if (category === "all") {
+    return Object.values(words);
+  }
+  return Object.values(words).filter(word => word.category.toLowerCase() === category.toLowerCase());
+}
 
 // Function to display a word
 function displayWord() {
@@ -37,7 +50,7 @@ function displayWord() {
   card.innerHTML = `<p>${isItalianToGerman ? word.italian : word.german}</p>`;
 }
 
-// Function to update word count .
+// Function to update word count
 function updateWordCount() {
   wordCount.textContent = `Words in total: ${currentDeck.length}`;
 }
@@ -67,15 +80,18 @@ hardButton.addEventListener("click", nextCard);
 
 // Handle deck selection
 deckButtons.forEach((button) => {
-  button.addEventListener("click", (e) => {
+  button.addEventListener("click", async (e) => {
     const selectedDeck = e.target.getAttribute("data-deck");
 
     // Highlight the active button
     deckButtons.forEach((btn) => btn.classList.remove("active"));
     e.target.classList.add("active");
 
-    // Filter words for the selected deck
-    currentDeck = words.filter((word) => word.categories.includes(selectedDeck));
+    // Update Flashcards title
+    flashcardsTitle.textContent = `Flashcards : ${selectedDeck.charAt(0).toUpperCase() + selectedDeck.slice(1)}`;
+
+    // Fetch and display words
+    currentDeck = await fetchWords(selectedDeck);
     currentIndex = 0;
 
     // Update word count and display the first word
