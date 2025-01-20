@@ -74,4 +74,27 @@ const highlightActiveDeck = (activeButton) => {
 // Event listeners for deck buttons
 deckButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-    const category = button.getA
+    const category = button.getAttribute("data-deck");
+    currentDeck = await fetchWords(category === "all" ? "all" : category);
+    currentIndex = 0;
+    showAnswer = false;
+    updateFlashcard();
+    updateWordCount();
+    highlightActiveDeck(button);
+  });
+});
+
+// Event listener for "Show Answer" button
+showAnswerButton.addEventListener("click", () => {
+  showAnswer = !showAnswer;
+  updateFlashcard();
+});
+
+// Event listener for "Switch" button
+switchButton.addEventListener("click", () => {
+  if (currentDeck.length > 0) {
+    currentIndex = (currentIndex + 1) % currentDeck.length;
+    showAnswer = false;
+    updateFlashcard();
+  }
+});
