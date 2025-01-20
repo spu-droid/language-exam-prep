@@ -60,6 +60,7 @@ function fetchWords() {
 
 // Event listener for "Show Answer" button
 showAnswerButton.addEventListener("click", () => {
+  if (currentDeck.length === 0) return;
   const word = currentDeck[currentIndex];
   card.innerHTML = `<p>${isItalianToGerman ? word.german : word.italian}</p>`;
 });
@@ -91,7 +92,10 @@ deckButtons.forEach((button) => {
     e.target.classList.add("active");
 
     // Filter words for the selected deck
-    currentDeck = words.filter((word) => word.categories.includes(selectedDeck));
+    currentDeck = words.filter((word) => {
+      return word.categories && word.categories.includes(selectedDeck);
+    });
+
     currentIndex = 0;
 
     // Update word count and display the first word
