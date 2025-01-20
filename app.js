@@ -4,13 +4,14 @@ import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
+  authDomain: "language-exam-prep-6698a.firebaseapp.com",
+  databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
+  projectId: "language-exam-prep-6698a",
+  storageBucket: "language-exam-prep-6698a.firebasestorage.app",
+  messagingSenderId: "858022856301",
+  appId: "1:858022856301:web:c416c22f250679783c6164",
+  measurementId: "G-HLEJ2829GR"
 };
 
 // Initialize Firebase
