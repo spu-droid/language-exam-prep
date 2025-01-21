@@ -89,17 +89,22 @@ controlButtons.forEach(button => button.addEventListener("click", () => {
     displayWord();
 }));
 
+// Delete the currently displayed word from Firebase and update the UI
 deleteButton.addEventListener("click", () => {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const wordRef = ref(database, `words/${currentDeck[currentIndex].key}`);
-        remove(wordRef).then(() => {
-            currentDeck.splice(currentIndex, 1); // Remove from local array
-            if (currentIndex >= currentDeck.length) { // If last word was deleted, adjust index
-                currentIndex = currentDeck.length - 1;
-            }
-            displayWord(); // Update UI
-        }).catch(error => {
-            console.error("Failed to delete word:", error);
-        });
+        const wordKey = currentDeck[currentIndex].key;  // Retrieve the unique key of the current word
+        const wordRef = ref(database, `words/${wordKey}`);  // Create a reference to the specific word in Firebase
+        remove(wordRef)  // Attempt to delete the word from Firebase
+            .then(() => {
+                console.log(`Word deleted successfully: ${wordKey}`);
+                currentDeck.splice(currentIndex, 1); // Remove the word from the local array
+                if (currentIndex >= currentDeck.length) { // Check if the current index exceeds available words
+                    currentIndex = currentDeck.length - 1; // Adjust index if necessary
+                }
+                displayWord(); // Refresh the display to reflect the deletion
+            })
+            .catch(error => {
+                console.error("Error deleting word:", error);  // Log errors if deletion fails
+            });
     }
 });
