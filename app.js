@@ -33,12 +33,12 @@ async function fetchWords(category) {
   const snapshot = await database.ref("words").once("value");
   const words = snapshot.val();
 
-  // Filter words by category, handling semicolon-separated categories
+  // Filter words by category, handling semicolon-separated categories and trimming spaces
   if (category === "all") {
     return Object.values(words);
   }
   return Object.values(words).filter(word => {
-    const categories = word.category.split(';'); // Split the category string into an array
+    const categories = word.category.split(';').map(cat => cat.trim()); // Split and trim category string into an array
     return categories.includes(category);
   });
 }
@@ -46,7 +46,7 @@ async function fetchWords(category) {
 // Function to display a word
 function displayWord() {
   if (currentDeck.length === 0) {
-    card.innerHTML = "<p>No words in this deck!</p>";
+    card.innerHTML = "<p>No words in this deck! Please select another.</p>";
     return;
   }
   const word = currentDeck[currentIndex];
