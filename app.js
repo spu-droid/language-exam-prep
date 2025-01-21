@@ -24,10 +24,11 @@ const card = document.getElementById("card");
 const wordCount = document.getElementById("word-count");
 const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
+const controlButtons = document.querySelectorAll("#controls button");
+const modeDisplay = document.getElementById("mode");
 const addButton = document.getElementById("add");
 const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
-const modeDisplay = document.getElementById("mode");
 
 // Default settings
 let currentDeck = [];
@@ -84,7 +85,31 @@ function displayWord() {
     }
 }
 
-// Add new word
+// Toggle language
+switchButton.addEventListener("click", () => {
+    isGermanFirst = !isGermanFirst;
+    displayWord();
+});
+
+// Show the answer for the current card
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex];
+    card.innerHTML = isGermanFirst ? word.italian : word.german;
+});
+
+// Control buttons logic: Easy, Medium, Hard (currently just navigates through cards)
+controlButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        if (currentIndex < currentDeck.length - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0; // Loop back to the first card
+        }
+        displayWord();
+    });
+});
+
+// Add a new card
 addButton.addEventListener("click", () => {
     const newItalian = prompt("Enter new Italian word:");
     const newGerman = prompt("Enter new German word:");
@@ -99,7 +124,7 @@ addButton.addEventListener("click", () => {
     }
 });
 
-// Edit existing word
+// Edit the current card
 editButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
     const updatedItalian = prompt("Update Italian word:", word.italian);
@@ -113,29 +138,11 @@ editButton.addEventListener("click", () => {
     }
 });
 
-// Delete current word
+// Delete the current card
 deleteButton.addEventListener("click", () => {
     if (currentKey) {
         remove(ref(database, `words/${currentKey}`));
         currentDeck.splice(currentIndex, 1);  // Remove from local array
         displayWord();  // Refresh display
     }
-});
-
-// Toggle language
-switchButton.addEventListener("click", () => {
-    isGermanFirst = !isGermanFirst;
-    displayWord();
-});
-
-// Navigate through words
-controlButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        if (currentIndex < currentDeck.length - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0; // Loop back to the first card
-        }
-        displayWord();
-    });
 });
