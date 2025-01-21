@@ -1,22 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if Firebase libraries are loaded
-    if (typeof firebase !== 'undefined' && firebase.app) {
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
-            authDomain: "language-exam-prep-6698a.firebaseapp.com",
-            databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
-            projectId: "language-exam-prep-6698a",
-            storageBucket: "language-exam-prep-6698a.firebasestorage.app",
-            messagingSenderId: "858022856301",
-            appId: "1:858022856301:web:c416c22f250679783c6164",
-            measurementId: "G-HLEJ2829GR"
-        };
-        firebase.initializeApp(firebaseConfig);
-    } else {
-        console.log('Firebase not loaded');
-    }
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
+const firebaseConfig = {
+    apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
+    authDomain: "language-exam-prep-6698a.firebaseapp.com",
+    databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
+    projectId: "language-exam-prep-6698a",
+    storageBucket: "language-exam-prep-6698a.firebasestorage.app",
+    messagingSenderId: "858022856301",
+    appId: "1:858022856301:web:c416c22f250679783c6164",
+    measurementId: "G-HLEJ2829GR"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+document.addEventListener('DOMContentLoaded', () => {
     const deckButtons = document.querySelectorAll(".deck-btn");
     const card = document.getElementById("card");
     const wordCount = document.getElementById("word-count");
@@ -25,25 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener("click", function() {
             deckButtons.forEach(btn => btn.classList.remove("active"));
             this.classList.add("active");
-
-            if (firebase && firebase.database) {
-                fetchWords(this.getAttribute("data-deck"));
-            } else {
-                card.innerHTML = "<p>Firebase is not available. Displaying local data may not be possible.</p>";
-                wordCount.textContent = "Words in total: 0";
-            }
+            fetchWords(this.getAttribute("data-deck"));
         });
     });
 
     async function fetchWords(deck) {
-        try {
-            const snapshot = await firebase.database().ref("words").once("value");
-            const words = snapshot.val() || {};
-            displayWords(filterWords(words, deck));
-        } catch (error) {
-            console.error("Error fetching words: ", error);
-            card.innerHTML = "<p>Error loading data.</p>";
-        }
+        const wordsRef = ref(database, 'words');
+        onValue(wordsRef, (snapshot) => {
+            const data = snapshot.val();
+            displayWords(filterWords(data, deck));
+        }, {
+            onlyOnce: true
+        });
     }
 
     function filterWords(words, category) {
@@ -54,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayWords(words) {
-        if (words.length > 0) {
-            card.innerHTML = `<p>${words[0].german} / ${words[0].italian}</p>`; // Example display of first word
+        if (words && words.length > 0) {
+            card.innerHTML = `<p>${words[0].german} / ${words[0].italian}</p>`; // Display the first word
             wordCount.textContent = `Words in total: ${words.length}`;
         } else {
             card.innerHTML = "<p>No words in this deck! Please select another.</p>";
