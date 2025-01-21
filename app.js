@@ -12,6 +12,7 @@ const firebaseConfig = {
     measurementId: "G-HLEJ2829GR"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -25,6 +26,7 @@ const wordCount = document.getElementById("word-count");
 const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
 const controlButtons = document.querySelectorAll("#controls button");
+const modeDisplay = document.getElementById("mode");
 
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
@@ -55,6 +57,7 @@ function displayWord() {
         const word = currentDeck[currentIndex];
         card.innerHTML = isGermanFirst ? word.german : word.italian;
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
+        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     } else {
         card.innerHTML = "<p>No words in this deck! Please select another.</p>";
         wordCount.textContent = "Words in total: 0";
@@ -81,3 +84,4 @@ controlButtons.forEach(button => {
         displayWord();
     });
 });
+

@@ -42,12 +42,21 @@ button.active {
 }
 
 #card {
-  border: 1px solid #ccc;
-  padding: 2rem;
-  margin: 1rem 0;
-  background: #fff;
-  font-size: 1.5rem;
-  min-height: 80px;
+    text-align: center;
+    font-size: 1.5rem;
+    margin: auto;
+    width: 80%; /* Adjust width as needed */
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    min-height: 80px; /* Adjust height as needed */
+}
+
+#mode {
+    text-align: right;
+    color: #333;
+    font-size: 0.9rem;
+    margin-right: 20px; /* Adjust the margin as needed */
 }
 
 #controls {
