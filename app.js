@@ -12,13 +12,19 @@ const firebaseConfig = {
     measurementId: "G-HLEJ2829GR"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+
+let currentDeck = [];
+let currentIndex = 0;
+let isGermanFirst = true;  // Default to show German word first
 
 const deckButtons = document.querySelectorAll(".deck-btn");
 const card = document.getElementById("card");
 const wordCount = document.getElementById("word-count");
+const showAnswerButton = document.getElementById("show-answer");
+const switchButton = document.getElementById("switch");
+const controlButtons = document.querySelectorAll("#controls button");
 
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
@@ -32,27 +38,46 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        console.log("Fetched data:", data);  // Debugging line
-        const filteredWords = filterWords(data, deck);
-        console.log("Filtered words for deck '" + deck + "':", filteredWords);  // Debugging line
-        displayWords(filteredWords);
+        currentDeck = filterWords(data, deck);
+        currentIndex = 0;
+        displayWord();
     }, {
         onlyOnce: true
     });
 }
 
 function filterWords(words, category) {
-    if (!words) return [];
     return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
-function displayWords(words) {
-    if (words.length > 0) {
-        const word = words[0]; // Display the first word as an example
-        card.innerHTML = `<p>${word.german} / ${word.italian}</p>`;
-        wordCount.textContent = `Words in total: ${words.length}`;
+function displayWord() {
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        card.innerHTML = isGermanFirst ? word.german : word.italian;
+        wordCount.textContent = `Words in total: ${currentDeck.length}`;
     } else {
         card.innerHTML = "<p>No words in this deck! Please select another.</p>";
         wordCount.textContent = "Words in total: 0";
     }
 }
+
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex];
+    card.innerHTML = isGermanFirst ? word.italian : word.german;
+});
+
+switchButton.addEventListener("click", () => {
+    isGermanFirst = !isGermanFirst;
+    displayWord();
+});
+
+controlButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        if (currentIndex < currentDeck.length - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0; // Loop back to the first card
+        }
+        displayWord();
+    });
+});
