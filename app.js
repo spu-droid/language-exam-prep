@@ -32,33 +32,31 @@ let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;  // Default to show German word first
 
-// Attach event listeners to deck buttons
-function attachDeckButtonListeners() {
-    deckButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            // Remove active class from all buttons
-            deckButtons.forEach(btn => btn.classList.remove("active"));
-            // Add active class to the clicked button
-            button.classList.add("active");
-            fetchWords(button.getAttribute("data-deck"));
-        });
+// Event listeners for deck selection buttons
+deckButtons.forEach(button => {
+    button.addEventListener("click", function() {
+        deckButtons.forEach(btn => btn.classList.remove("active"));
+        this.classList.add("active");
+        fetchWords(this.getAttribute("data-deck"));
     });
-}
-
-// Initialize button listeners
-attachDeckButtonListeners();
+});
 
 // Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = Object.values(data).filter(word => word.category && word.category.split(';').includes(deck));
+        currentDeck = filterWords(data, deck);
         currentIndex = 0;
         displayWord();
     }, {
         onlyOnce: true
     });
+}
+
+// Filter words by categories
+function filterWords(words, category) {
+    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
 // Display the current word on the card
