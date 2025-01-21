@@ -44,19 +44,20 @@ button.active {
 #card {
     text-align: center;
     font-size: 1.5rem;
-    margin: auto;
-    width: 80%; /* Adjust width as needed */
-    padding: 20px;
-    box-sizing: border-box;
+    background: white;
     border: 1px solid #ccc;
-    min-height: 80px; /* Adjust height as needed */
+    padding: 20px;
+    min-height: 100px;
+    width: 60%;
+    margin: auto; /* Centers the card */
 }
 
-#mode {
-    text-align: right;
+
+#word-count, #mode {
+    text-align: center;
     color: #333;
     font-size: 0.9rem;
-    margin-right: 20px; /* Adjust the margin as needed */
+    margin-top: 20px; /* Spacing above the text */
 }
 
 #controls {
@@ -65,14 +66,9 @@ button.active {
   gap: 10px;
 }
 
-#word-count {
-  margin-top: 0.5rem;
-  font-size: 1.1rem;
-  color: #555;
-}
 
-footer {
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.5);
+footer p, #mode {
+    color: #333;
+    font-size: 0.9rem;
+    text-align: center;
 }
