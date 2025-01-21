@@ -44,18 +44,21 @@ deckButtons.forEach(button => {
 
 // Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
+    console.log("Selected deck:", deck);  // Debugging line to see what deck is passed
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
+        console.log("Fetched data:", data);  // See all fetched data for debugging
+
         if (deck === "All Words") {
-            // Fetch all words without filtering if "All Words" is selected
             currentDeck = Object.values(data);
         } else {
-            // Filter words by categories
+            // Ensuring strict equality or better filtering
             currentDeck = Object.values(data).filter(word =>
-                word.category && word.category.split(';').some(cat => cat.trim() === deck)
+                word.category && word.category.split(';').includes(deck.trim())
             );
         }
+        console.log("Filtered currentDeck:", currentDeck);  // Debug what's being set to currentDeck
         currentIndex = 0;
         displayWord();
     }, {
