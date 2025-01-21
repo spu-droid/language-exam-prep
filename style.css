@@ -42,17 +42,17 @@ button.active {
 }
 
 #card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; /* Using flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
     text-align: center;
     font-size: 1.5rem;
     background: white;
     border: 1px solid #ccc;
     padding: 20px;
-    min-height: 100px;
+    min-height: 100px; /* Adjust this if needed */
     width: 60%;
-    margin: auto; /* Centers the card horizontally */
+    margin: auto; /* Centers the card horizontally on the page */
 }
 
 #mode, #word-count {
