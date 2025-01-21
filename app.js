@@ -46,17 +46,20 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = filterWords(data, deck);
+        if (deck === "All Words") {
+            // Fetch all words without filtering if "All Words" is selected
+            currentDeck = Object.values(data);
+        } else {
+            // Filter words by categories
+            currentDeck = Object.values(data).filter(word =>
+                word.category && word.category.split(';').some(cat => cat.trim() === deck)
+            );
+        }
         currentIndex = 0;
         displayWord();
     }, {
         onlyOnce: true
     });
-}
-
-// Filter words by categories
-function filterWords(words, category) {
-    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
 // Display the current word on the card
@@ -73,19 +76,25 @@ function displayWord() {
     }
 }
 
-// Toggle German/Italian display on card
+// Event listener for the Show Answer button
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex];
+    card.innerHTML = isGermanFirst ? word.italian : word.german;
+});
+
+// Event listener for the Switch button
 switchButton.addEventListener("click", () => {
     isGermanFirst = !isGermanFirst;
     displayWord();
 });
 
-// Move to next card
+// Event listeners for control buttons (Easy, Medium, Hard)
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
         if (currentIndex < currentDeck.length - 1) {
             currentIndex++;
         } else {
-            currentIndex = 0;
+            currentIndex = 0; // Loop back to the first card
         }
         displayWord();
     });
