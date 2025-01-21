@@ -1,6 +1,6 @@
 // Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getDatabase, ref, onValue, remove, child } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -26,40 +26,30 @@ const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
 const controlButtons = document.querySelectorAll("#controls button");
 const modeDisplay = document.getElementById("mode");
-const deleteButton = document.getElementById("delete"); // Delete button
+const deleteButton = document.getElementById("delete");
 
 let currentDeck = [];
 let currentIndex = 0;
-let isGermanFirst = true;  // Default to show German word first
+let isGermanFirst = true;
 
-// Event listeners for deck selection buttons
-deckButtons.forEach(button => {
-    button.addEventListener("click", function() {
-        deckButtons.forEach(btn => btn.classList.remove("active"));
-        this.classList.add("active");
-        fetchWords(this.getAttribute("data-deck"));
-    });
-});
-
-// Fetch words from Firebase based on the selected category
+// Fetching all words or filtered by category
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = filterWords(data, deck);
+        if (deck === "All Words") {
+            currentDeck = Object.values(data).map((word, index) => ({ ...word, key: Object.keys(data)[index] }));
+        } else {
+            currentDeck = Object.values(data)
+                                .filter(word => word.category && word.category.split(';').includes(deck))
+                                .map((word, index) => ({ ...word, key: Object.keys(data)[index] }));
+        }
         currentIndex = 0;
         displayWord();
-    }, {
-        onlyOnce: true
-    });
+    }, { onlyOnce: true });
 }
 
-// Filter words by category
-function filterWords(words, category) {
-    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
-}
-
-// Display the current word on the card
+// Display the current word
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
@@ -73,37 +63,40 @@ function displayWord() {
     }
 }
 
-// Event listener for the Show Answer button
+// Button functionalities
+deckButtons.forEach(button => button.addEventListener("click", function() {
+    deckButtons.forEach(btn => btn.classList.remove("active"));
+    this.classList.add("active");
+    fetchWords(this.getAttribute("data-deck"));
+}));
+
 showAnswerButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
     card.innerHTML = isGermanFirst ? word.italian : word.german;
 });
 
-// Event listener for the Switch button
 switchButton.addEventListener("click", () => {
     isGermanFirst = !isGermanFirst;
     displayWord();
 });
 
-// Event listeners for control buttons (Easy, Medium, Hard)
-controlButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        if (currentIndex < currentDeck.length - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0; // Loop back to the first card
-        }
-        displayWord();
-    });
-});
+controlButtons.forEach(button => button.addEventListener("click", () => {
+    if (currentIndex < currentDeck.length - 1) {
+        currentIndex++;
+    } else {
+        currentIndex = 0;
+    }
+    displayWord();
+}));
 
-// Event listener for the Delete button
 deleteButton.addEventListener("click", () => {
-    if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
-        const wordRef = ref(database, `words/${currentDeck[currentIndex].key}`); // Assuming 'key' is stored in each word entry
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const wordRef = ref(database, `words/${currentDeck[currentIndex].key}`);
         remove(wordRef).then(() => {
-            console.log("Word deleted successfully");
             currentDeck.splice(currentIndex, 1); // Remove from local array
+            if (currentIndex >= currentDeck.length) { // If last word was deleted, adjust index
+                currentIndex = currentDeck.length - 1;
+            }
             displayWord(); // Update UI
         }).catch(error => {
             console.error("Failed to delete word:", error);
