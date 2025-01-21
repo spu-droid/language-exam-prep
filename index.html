@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Italian Exam Preparation</title>
+    <title>Italian A2</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,26 +13,24 @@
     </header>
     <main>
         <div id="deck-selection">
-            <h2>Select a Deck</h2>
-            <button class="deck-btn" data-deck="All Words">All Words</button>
-            <button class="deck-btn" data-deck="Unita 1">Unità 1</button>
-            <button class="deck-btn" data-deck="Unita 2">Unità 2</button>
-            <button class="deck-btn" data-deck="Unita 3">Unità 3</button>
-            <button class="deck-btn" data-deck="Unita 4">Unità 4</button>
-            <button class="deck-btn" data-deck="Unita 5">Unità 5</button>
-            <button class="deck-btn" data-deck="Unita 6">Unità 6</button>
-            <button class="deck-btn" data-deck="Unita 7">Unità 7</button>
-            <button class="deck-btn" data-deck="Unita 8">Unità 8</button>
-        </div>
+			<h2>Select a Deck</h2>
+			<button class="deck-btn" data-deck="All Words">All Words</button>
+			<button class="deck-btn" data-deck="Unita 1">Unita 1</button>
+			<button class="deck-btn" data-deck="Unita 2">Unita 2</button>
+			<button class="deck-btn" data-deck="Unita 3">Unita 3</button>
+			<button class="deck-btn" data-deck="Unita 4">Unita 4</button>
+			<button class="deck-btn" data-deck="Unita 5">Unita 5</button>
+			<button class="deck-btn" data-deck="Unita 6">Unita 6</button>
+			<button class="deck-btn" data-deck="Unita 7">Unita 7</button>
+			<button class="deck-btn" data-deck="Unita 8">Unita 8</button>
+		</div>
         <div id="deck">
             <h2>Flashcards</h2>
-            <div id="card">
-                <p>Select a deck to start!</p>
-            </div>
-            <p id="word-count">Words in total: 0</p>
+            <div id="card" style="text-align: center; font-size: 1.5rem; background: white; border: 1px solid #ccc; padding: 20px; min-height: 100px; width: 60%; margin: auto;">Select a deck to start!</div>
+            <p id="mode" style="text-align: center; color: #333; font-size: 0.9rem;">Mode: DE-IT</p>
+            <p id="word-count" style="text-align: center; color: #333; font-size: 0.9rem;">Words in total: 0</p>
             <button id="show-answer">Show Answer</button>
             <button id="switch">Switch</button>
-            <button id="edit-button">Edit</button>
             <div id="controls">
                 <button id="easy">Easy</button>
                 <button id="medium">Medium</button>
@@ -41,17 +39,8 @@
         </div>
     </main>
     <footer>
-        <p id="version">Version: V37</p>
+        <p>Version: V30</p>
     </footer>
-    
-    <!-- Edit Modal -->
-    <div id="edit-modal" style="display:none;">
-        <input type="text" id="edit-german" placeholder="German word">
-        <input type="text" id="edit-italian" placeholder="Italian word">
-        <button onclick="saveChanges()">Save</button>
-        <button onclick="closeModal()">Cancel</button>
-    </div>
-
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
