@@ -1,6 +1,8 @@
+// Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
     authDomain: "language-exam-prep-6698a.firebaseapp.com",
@@ -16,10 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-let currentDeck = [];
-let currentIndex = 0;
-let isGermanFirst = true;  // Default to show German word first
-
+// UI Elements
 const deckButtons = document.querySelectorAll(".deck-btn");
 const card = document.getElementById("card");
 const wordCount = document.getElementById("word-count");
@@ -28,6 +27,12 @@ const switchButton = document.getElementById("switch");
 const controlButtons = document.querySelectorAll("#controls button");
 const modeDisplay = document.getElementById("mode");
 
+// Default settings
+let currentDeck = [];
+let currentIndex = 0;
+let isGermanFirst = true;  // Default to show German word first
+
+// Event listeners for deck selection buttons
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
         deckButtons.forEach(btn => btn.classList.remove("active"));
@@ -36,6 +41,7 @@ deckButtons.forEach(button => {
     });
 });
 
+// Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
@@ -48,10 +54,12 @@ function fetchWords(deck) {
     });
 }
 
+// Filter words by category
 function filterWords(words, category) {
     return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
+// Display the current word on the card
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
@@ -59,22 +67,25 @@ function displayWord() {
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
         modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     } else {
-        card.innerHTML = "<p>Select a deck to start!</p>";
+        card.innerHTML = "<p>No words in this deck! Please select another.</p>";
         wordCount.textContent = "Words in total: 0";
-        modeDisplay.textContent = ""; // Clear mode text when no deck is selected
+        modeDisplay.textContent = "";
     }
 }
 
+// Event listener for the Show Answer button
 showAnswerButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
     card.innerHTML = isGermanFirst ? word.italian : word.german;
 });
 
+// Event listener for the Switch button
 switchButton.addEventListener("click", () => {
     isGermanFirst = !isGermanFirst;
     displayWord();
 });
 
+// Event listeners for control buttons (Easy, Medium, Hard)
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
         if (currentIndex < currentDeck.length - 1) {
