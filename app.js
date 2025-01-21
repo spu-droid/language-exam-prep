@@ -43,18 +43,16 @@ deckButtons.forEach(button => {
 
 // Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
-    const wordsRef = ref(database, 'words');
-    onValue(wordsRef, snapshot => {
+    const wordsRef = ref(database, 'words');  // Make sure this is the correct path
+    onValue(wordsRef, (snapshot) => {
         const data = snapshot.val();
-        let filteredWords;
-        if (deck === "All Words") {
-            filteredWords = Object.values(data); // No filter applied, take all words.
-        } else {
-            filteredWords = Object.values(data).filter(word =>
-                word.category && word.category.split(';').includes(deck)
-            );
+        if (!data) {
+            console.log('No data found!');
+            return;
         }
-        displayWord(filteredWords); // Ensure this function handles an empty array properly.
+        let filteredWords = deck === "All Words" ? Object.values(data) : Object.values(data).filter(word => word.category.split(';').includes(deck));
+        console.log(filteredWords);  // Check what you're getting here
+        displayWords(filteredWords);
     }, {
         onlyOnce: true
     });
