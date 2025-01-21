@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Firebase if available
+    // Check if Firebase libraries are loaded
     if (typeof firebase !== 'undefined' && firebase.app) {
-        // Firebase configuration
+        // Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
             authDomain: "language-exam-prep-6698a.firebaseapp.com",
@@ -12,53 +12,40 @@ document.addEventListener('DOMContentLoaded', function() {
             appId: "1:858022856301:web:c416c22f250679783c6164",
             measurementId: "G-HLEJ2829GR"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+    } else {
+        console.log('Firebase not loaded');
     }
 
-    // DOM Elements
+    const deckButtons = document.querySelectorAll(".deck-btn");
     const card = document.getElementById("card");
     const wordCount = document.getElementById("word-count");
-    const deckButtons = document.querySelectorAll(".deck-btn");
 
-    // Function to display a message if no words or no Firebase
-    function displayMessage(message) {
-        card.innerHTML = `<p>${message}</p>`;
-    }
+    deckButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            deckButtons.forEach(btn => btn.classList.remove("active"));
+            this.classList.add("active");
 
-    // Event listener for deck buttons
-    deckButtons.forEach((button) => {
-        button.addEventListener("click", (e) => {
-            // Highlight the active button
-            deckButtons.forEach((btn) => btn.classList.remove("active"));
-            e.target.classList.add("active");
-
-            // Check for Firebase and fetch words
             if (firebase && firebase.database) {
-                fetchWords(e.target.getAttribute("data-deck"));
+                fetchWords(this.getAttribute("data-deck"));
             } else {
-                displayMessage("Firebase is not available. Displaying local data may not be possible.");
+                card.innerHTML = "<p>Firebase is not available. Displaying local data may not be possible.</p>";
+                wordCount.textContent = "Words in total: 0";
             }
         });
     });
 
-    // Fetch words from Firebase Database
-    async function fetchWords(category) {
+    async function fetchWords(deck) {
         try {
-            const database = firebase.database();
-            const snapshot = await database.ref("words").once("value");
+            const snapshot = await firebase.database().ref("words").once("value");
             const words = snapshot.val() || {};
-
-            // Filter and display words
-            displayWords(filterWords(words, category));
+            displayWords(filterWords(words, deck));
         } catch (error) {
-            console.error("Firebase operation failed: ", error);
-            displayMessage("Error fetching data. Please check your network connection.");
+            console.error("Error fetching words: ", error);
+            card.innerHTML = "<p>Error loading data.</p>";
         }
     }
 
-    // Filter words by category
     function filterWords(words, category) {
         if (category === "all") {
             return Object.values(words);
@@ -66,13 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return Object.values(words).filter(word => word.category.split(';').map(cat => cat.trim()).includes(category));
     }
 
-    // Function to display words
     function displayWords(words) {
         if (words.length > 0) {
-            card.innerHTML = `<p>${words[0].german} / ${words[0].italian}</p>`; // Example display
+            card.innerHTML = `<p>${words[0].german} / ${words[0].italian}</p>`; // Example display of first word
             wordCount.textContent = `Words in total: ${words.length}`;
         } else {
-            displayMessage("No words in this deck! Please select another.");
+            card.innerHTML = "<p>No words in this deck! Please select another.</p>";
+            wordCount.textContent = "Words in total: 0";
         }
     }
 });

@@ -1,49 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Italian Exam Preparation</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian A2</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Italian A2</h1>
-    <p>Learn Italian through interactive flashcards with German translations!</p>
-  </header>
-  <main>
-    <div id="deck-selection">
-      <h2>Select a Deck</h2>
-      <button class="deck-btn" data-deck="all">All Words</button>
-      <button class="deck-btn" data-deck="numbers">Numbers</button>
-      <button class="deck-btn" data-deck="animals">Animals</button>
-      <button class="deck-btn" data-deck="verbs">Verbs</button>
-      <button class="deck-btn" data-deck="nouns">Nouns</button>
-      <button class="deck-btn" data-deck="adjectives">Adjectives</button>
-      <button class="deck-btn" data-deck="phrases">Phrases</button>
-      <button class="deck-btn" data-deck="food">Food</button>
-      <button class="deck-btn" data-deck="living">Living</button>
-      <button class="deck-btn" data-deck="clothes">Clothes</button>
-      <button class="deck-btn" data-deck="cool_phrases">Cool Phrases</button>
-    </div>
-    <div id="deck">
-      <h2>Flashcards</h2>
-      <div id="card">
-        <p>Select a deck to start!</p>
-      </div>
-      <p id="word-count">Words in total: 0</p>
-      <button id="show-answer">Show Answer</button>
-      <button id="switch">Switch</button>
-      <div id="controls">
-        <button id="easy">Easy</button>
-        <button id="medium">Medium</button>
-        <button id="hard">Hard</button>
-      </div>
-    </div>
-  </main>
-  <footer>
-    <p id="version">Version: V11</p>
-  </footer>
-  <script src="app.js"></script>
+    <header>
+        <h1>Italian A2</h1>
+        <p>Learn Italian through interactive flashcards with German translations!</p>
+    </header>
+    <main>
+        <div id="deck-selection">
+            <h2>Select a Deck</h2>
+            <button class="deck-btn" data-deck="all">All Words</button>
+            <button class="deck-btn" data-deck="numbers">Numbers</button>
+            <button class="deck-btn" data-deck="animals">Animals</button>
+            <button class="deck-btn" data-deck="verbs">Verbs</button>
+            <button class="deck-btn" data-deck="nouns">Nouns</button>
+            <button class="deck-btn" data-deck="adjectives">Adjectives</button>
+            <button class="deck-btn" data-deck="phrases">Phrases</button>
+            <button class="deck-btn" data-deck="food">Food</button>
+            <button class="deck-btn" data-deck="living">Living</button>
+            <button class="deck-btn" data-deck="clothes">Clothes</button>
+            <button class="deck-btn" data-deck="cool_phrases">Cool Phrases</button>
+        </div>
+        <div id="deck">
+            <h2>Flashcards</h2>
+            <div id="card">
+                <p>Select a deck to start!</p>
+            </div>
+            <p id="word-count">Words in total: 0</p>
+            <button id="show-answer">Show Answer</button>
+            <button id="switch">Switch</button>
+            <div id="controls">
+                <button id="easy">Easy</button>
+                <button id="medium">Medium</button>
+                <button id="hard">Hard</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>Version: V12</p>
+    </footer>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
