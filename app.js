@@ -1,103 +1,78 @@
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
-  authDomain: "language-exam-prep-6698a.firebaseapp.com",
-  databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
-  projectId: "language-exam-prep-6698a",
-  storageBucket: "language-exam-prep-6698a.firebasestorage.app",
-  messagingSenderId: "858022856301",
-  appId: "1:858022856301:web:c416c22f250679783c6164",
-  measurementId: "G-HLEJ2829GR"
-};
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Firebase if available
+    if (typeof firebase !== 'undefined' && firebase.app) {
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
+            authDomain: "language-exam-prep-6698a.firebaseapp.com",
+            databaseURL: "https://language-exam-prep-6698a-default-rtdb.firebaseio.com",
+            projectId: "language-exam-prep-6698a",
+            storageBucket: "language-exam-prep-6698a.firebasestorage.app",
+            messagingSenderId: "858022856301",
+            appId: "1:858022856301:web:c416c22f250679783c6164",
+            measurementId: "G-HLEJ2829GR"
+        };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    }
 
-// DOM Elements
-const card = document.getElementById("card");
-const wordCount = document.getElementById("word-count");
-const showAnswerButton = document.getElementById("show-answer");
-const switchButton = document.getElementById("switch");
-const easyButton = document.getElementById("easy");
-const mediumButton = document.getElementById("medium");
-const hardButton = document.getElementById("hard");
-const deckButtons = document.querySelectorAll(".deck-btn");
+    // DOM Elements
+    const card = document.getElementById("card");
+    const wordCount = document.getElementById("word-count");
+    const deckButtons = document.querySelectorAll(".deck-btn");
 
-let currentDeck = [];
-let currentIndex = 0;
-let isItalianToGerman = true; // Default language direction
+    // Function to display a message if no words or no Firebase
+    function displayMessage(message) {
+        card.innerHTML = `<p>${message}</p>`;
+    }
 
-// Fetch words from Firebase Database
-async function fetchWords(category) {
-  const snapshot = await database.ref("words").once("value");
-  const words = snapshot.val();
+    // Event listener for deck buttons
+    deckButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            // Highlight the active button
+            deckButtons.forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
 
-  // Filter words by category, handling semicolon-separated categories and trimming spaces
-  if (category === "all") {
-    return Object.values(words);
-  }
-  return Object.values(words).filter(word => {
-    const categories = word.category.split(';').map(cat => cat.trim()); // Split and trim category string into an array
-    return categories.includes(category);
-  });
-}
+            // Check for Firebase and fetch words
+            if (firebase && firebase.database) {
+                fetchWords(e.target.getAttribute("data-deck"));
+            } else {
+                displayMessage("Firebase is not available. Displaying local data may not be possible.");
+            }
+        });
+    });
 
-// Function to display a word
-function displayWord() {
-  if (currentDeck.length === 0) {
-    card.innerHTML = "<p>No words in this deck! Please select another.</p>";
-    return;
-  }
-  const word = currentDeck[currentIndex];
-  card.innerHTML = `<p>${isItalianToGerman ? word.italian : word.german}</p>`;
-}
+    // Fetch words from Firebase Database
+    async function fetchWords(category) {
+        try {
+            const database = firebase.database();
+            const snapshot = await database.ref("words").once("value");
+            const words = snapshot.val() || {};
 
-// Function to update word count
-function updateWordCount() {
-  wordCount.textContent = `Words in total: ${currentDeck.length}`;
-}
+            // Filter and display words
+            displayWords(filterWords(words, category));
+        } catch (error) {
+            console.error("Firebase operation failed: ", error);
+            displayMessage("Error fetching data. Please check your network connection.");
+        }
+    }
 
-// Event listener for "Show Answer" button
-showAnswerButton.addEventListener("click", () => {
-  const word = currentDeck[currentIndex];
-  card.innerHTML = `<p>${isItalianToGerman ? word.german : word.italian}</p>`;
+    // Filter words by category
+    function filterWords(words, category) {
+        if (category === "all") {
+            return Object.values(words);
+        }
+        return Object.values(words).filter(word => word.category.split(';').map(cat => cat.trim()).includes(category));
+    }
+
+    // Function to display words
+    function displayWords(words) {
+        if (words.length > 0) {
+            card.innerHTML = `<p>${words[0].german} / ${words[0].italian}</p>`; // Example display
+            wordCount.textContent = `Words in total: ${words.length}`;
+        } else {
+            displayMessage("No words in this deck! Please select another.");
+        }
+    }
 });
-
-// Event listener for "Switch" button
-switchButton.addEventListener("click", () => {
-  isItalianToGerman = !isItalianToGerman;
-  displayWord();
-});
-
-// Function to select the next card
-function nextCard() {
-  currentIndex = (currentIndex + 1) % currentDeck.length;
-  displayWord();
-}
-
-// Event listeners for difficulty buttons
-easyButton.addEventListener("click", nextCard);
-mediumButton.addEventListener("click", nextCard);
-hardButton.addEventListener("click", nextCard);
-
-// Handle deck selection
-deckButtons.forEach((button) => {
-  button.addEventListener("click", async (e) => {
-    const selectedDeck = e.target.getAttribute("data-deck");
-
-    // Highlight the active button
-    deckButtons.forEach((btn) => btn.classList.remove("active"));
-    e.target.classList.add("active");
-
-    // Fetch and display words
-    currentDeck = await fetchWords(selectedDeck);
-    currentIndex = 0;
-    displayWord();
-    updateWordCount(); // Update the word count whenever a new deck is selected
-  });
-});
-
-// Initialize with a default message
-updateWordCount();
-displayWord();
