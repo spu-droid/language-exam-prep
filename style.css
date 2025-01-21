@@ -36,8 +36,9 @@ button:hover {
 }
 
 button.active {
-  background: #ccc;
-  font-weight: bold;
+  background: #ccc; /* Make the button a bit more gray when selected */
+  font-weight: bold; /* Optionally, make the font bolder */
+  color: #000; /* Change the text color if necessary for better visibility */
 }
 
 #card {
