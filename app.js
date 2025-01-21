@@ -37,16 +37,17 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        if (deck === "All Words") {
-            currentDeck = Object.values(data).map((word, index) => ({ ...word, key: Object.keys(data)[index] }));
-        } else {
-            currentDeck = Object.values(data)
-                                .filter(word => word.category && word.category.split(';').includes(deck))
-                                .map((word, index) => ({ ...word, key: Object.keys(data)[index] }));
+        currentDeck = [];
+        for (const [key, word] of Object.entries(data)) {
+            if (word.category && word.category.split(';').includes(deck)) {
+                currentDeck.push({ ...word, key });  // Add the key to each word
+            }
         }
         currentIndex = 0;
         displayWord();
-    }, { onlyOnce: true });
+    }, {
+        onlyOnce: true
+    });
 }
 
 // Display the current word
@@ -89,22 +90,24 @@ controlButtons.forEach(button => button.addEventListener("click", () => {
     displayWord();
 }));
 
-// Delete the currently displayed word from Firebase and update the UI
 deleteButton.addEventListener("click", () => {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const wordKey = currentDeck[currentIndex].key;  // Retrieve the unique key of the current word
-        const wordRef = ref(database, `words/${wordKey}`);  // Create a reference to the specific word in Firebase
-        remove(wordRef)  // Attempt to delete the word from Firebase
+        const wordKey = currentDeck[currentIndex].key;  // Use the key of the current word
+        const wordRef = ref(database, `words/${wordKey}`);
+
+        remove(wordRef)
             .then(() => {
-                console.log(`Word deleted successfully: ${wordKey}`);
-                currentDeck.splice(currentIndex, 1); // Remove the word from the local array
-                if (currentIndex >= currentDeck.length) { // Check if the current index exceeds available words
-                    currentIndex = currentDeck.length - 1; // Adjust index if necessary
+                console.log(`Deleted word: ${wordKey}`);
+                currentDeck.splice(currentIndex, 1);  // Remove the word locally
+                if (currentIndex >= currentDeck.length) {  // Adjust index if necessary
+                    currentIndex = 0;
                 }
-                displayWord(); // Refresh the display to reflect the deletion
+                displayWord();  // Refresh the display
             })
             .catch(error => {
-                console.error("Error deleting word:", error);  // Log errors if deletion fails
+                console.error("Error deleting word:", error);
             });
+    } else {
+        console.log("No word to delete or no word selected.");
     }
 });
