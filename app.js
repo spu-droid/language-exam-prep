@@ -1,4 +1,3 @@
-// Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
@@ -33,7 +32,9 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
+        console.log("Fetched data:", data);  // Debugging line
         const filteredWords = filterWords(data, deck);
+        console.log("Filtered words for deck '" + deck + "':", filteredWords);  // Debugging line
         displayWords(filteredWords);
     }, {
         onlyOnce: true
@@ -41,12 +42,13 @@ function fetchWords(deck) {
 }
 
 function filterWords(words, category) {
-    return Object.values(words).filter(word => word.category.split(';').includes(category));
+    if (!words) return [];
+    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
 function displayWords(words) {
     if (words.length > 0) {
-        const word = words[0];
+        const word = words[0]; // Display the first word as an example
         card.innerHTML = `<p>${word.german} / ${word.italian}</p>`;
         wordCount.textContent = `Words in total: ${words.length}`;
     } else {
