@@ -26,7 +26,9 @@ const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
 const editButton = document.getElementById("edit-button");
 const controlButtons = document.querySelectorAll("#controls button");
+const modeDisplay = document.getElementById("mode");
 
+// Default settings
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;  // Default to show German word first
@@ -45,28 +47,38 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = Object.values(data).filter(word => word.category && word.category.split(';').includes(deck));
+        if (deck === "All Words") {
+            currentDeck = Object.values(data);
+        } else {
+            currentDeck = Object.values(data).filter(word =>
+                word.category && word.category.split(';').some(cat => cat.trim() === deck)
+            );
+        }
         currentIndex = 0;
         displayWord();
-    }, { onlyOnce: true });
+    }, {
+        onlyOnce: true
+    });
 }
 
 // Display the current word on the card
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
-        card.textContent = isGermanFirst ? word.german : word.italian;
+        card.innerHTML = isGermanFirst ? word.german : word.italian;
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
+        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     } else {
-        card.textContent = "No words in this deck! Please select another.";
+        card.innerHTML = "<p>No words in this deck! Please select another.</p>";
         wordCount.textContent = "Words in total: 0";
+        modeDisplay.textContent = "";
     }
 }
 
 // Event listener for the Show Answer button
 showAnswerButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
-    card.textContent = isGermanFirst ? word.italian : word.german;
+    card.innerHTML = isGermanFirst ? word.italian : word.german;
 });
 
 // Event listener for the Switch button
@@ -89,15 +101,17 @@ controlButtons.forEach(button => {
 
 // Editing flashcards
 editButton.addEventListener('click', function() {
-    let editModal = document.getElementById('edit-modal');
-    let editGerman = document.getElementById('edit-german');
-    let editItalian = document.getElementById('edit-italian');
+    let editModal = document.getElementById('edit-modal');  // Make sure this modal is defined in your HTML
+    let editGerman = document.getElementById('edit-german');  // Input for German word
+    let editItalian = document.getElementById('edit-italian');  // Input for Italian word
 
+    // Set the value of inputs to the current word
     editGerman.value = currentDeck[currentIndex].german;
     editItalian.value = currentDeck[currentIndex].italian;
-    editModal.style.display = 'block';
+    editModal.style.display = 'block';  // Show the modal
 });
 
+// Function to save changes after editing
 function saveChanges() {
     const updatedGerman = document.getElementById('edit-german').value;
     const updatedItalian = document.getElementById('edit-italian').value;
@@ -110,13 +124,14 @@ function saveChanges() {
         currentDeck[currentIndex].german = updatedGerman;
         currentDeck[currentIndex].italian = updatedItalian;
         displayWord();
-        closeModal();
+        closeModal();  // Close the modal after saving
     }).catch(error => {
         console.error("Error updating document: ", error);
     });
 }
 
+// Function to close the edit modal
 function closeModal() {
     let editModal = document.getElementById('edit-modal');
-    editModal.style.display = 'none';
+    editModal.style.display = 'none';  // Hide the modal
 }
