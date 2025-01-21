@@ -46,17 +46,20 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = filterWords(data, deck);
+        if (deck === "All Words") {
+            // Fetch all words without filtering if "All Words" is selected
+            currentDeck = Object.values(data);
+        } else {
+            // Filter words by categories
+            currentDeck = Object.values(data).filter(word =>
+                word.category && word.category.split(';').some(cat => cat.trim() === deck)
+            );
+        }
         currentIndex = 0;
         displayWord();
     }, {
         onlyOnce: true
     });
-}
-
-// Filter words by category
-function filterWords(words, category) {
-    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
 }
 
 // Display the current word on the card
