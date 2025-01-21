@@ -59,8 +59,9 @@ function displayWord() {
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
         modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     } else {
-        card.innerHTML = "<p>No words in this deck! Please select another.</p>";
+        card.innerHTML = "<p>Select a deck to start!</p>";
         wordCount.textContent = "Words in total: 0";
+        modeDisplay.textContent = ""; // Clear mode text when no deck is selected
     }
 }
 

@@ -42,6 +42,9 @@ button.active {
 }
 
 #card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     font-size: 1.5rem;
     background: white;
@@ -49,15 +52,14 @@ button.active {
     padding: 20px;
     min-height: 100px;
     width: 60%;
-    margin: auto; /* Centers the card */
+    margin: auto; /* Centers the card horizontally */
 }
 
-
-#word-count, #mode {
+#mode, #word-count {
     text-align: center;
     color: #333;
     font-size: 0.9rem;
-    margin-top: 20px; /* Spacing above the text */
+    margin-top: 10px; /* Adjust spacing as needed */
 }
 
 #controls {
