@@ -84,4 +84,3 @@ controlButtons.forEach(button => {
         displayWord();
     });
 });
-
