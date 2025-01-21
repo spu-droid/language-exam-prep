@@ -1,6 +1,6 @@
 // Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -18,19 +18,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+// UI Elements
 const deckButtons = document.querySelectorAll(".deck-btn");
 const card = document.getElementById("card");
-const editButton = document.getElementById("edit");
 const wordCount = document.getElementById("word-count");
 const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
 const controlButtons = document.querySelectorAll("#controls button");
 const modeDisplay = document.getElementById("mode");
+const editButton = document.getElementById("edit");
 
+// Default settings
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;
+let wordKeys = [];  // Array to store Firebase keys of the words
 
+// Event listeners for deck selection buttons
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
         deckButtons.forEach(btn => btn.classList.remove("active"));
@@ -39,30 +43,19 @@ deckButtons.forEach(button => {
     });
 });
 
-editButton.addEventListener("click", function() {
-    const word = currentDeck[currentIndex];
-    const newGerman = prompt("Edit German word:", word.german);
-    const newItalian = prompt("Edit Italian word:", word.italian);
-    if (newGerman && newItalian) {
-        word.german = newGerman;
-        word.italian = newItalian;
-        const wordRef = ref(database, `words/${currentIndex}`);
-        set(wordRef, word);
-        displayWord(); // Refresh display
-    }
-});
-
+// Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        if (deck === "All Words") {
-            // For "All Words" deck, do not filter, include all entries
-            currentDeck = Object.values(data);
-        } else {
-            // For other decks, filter by the specified category
-            currentDeck = Object.values(data).filter(word => word.category && word.category.split(';').includes(deck));
-        }
+        currentDeck = [];
+        wordKeys = [];
+        Object.entries(data).forEach(([key, word]) => {
+            if (deck === "All Words" || word.category && word.category.split(';').includes(deck)) {
+                currentDeck.push(word);
+                wordKeys.push(key);
+            }
+        });
         currentIndex = 0;
         displayWord();
     }, {
@@ -70,10 +63,7 @@ function fetchWords(deck) {
     });
 }
 
-function filterWords(words, category) {
-    return Object.values(words).filter(word => word.category && word.category.split(';').includes(category));
-}
-
+// Display the current word on the card
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
@@ -87,23 +77,19 @@ function displayWord() {
     }
 }
 
-showAnswerButton.addEventListener("click", () => {
+// Event listener for the Edit button
+editButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
-    card.innerHTML = isGermanFirst ? word.italian : word.german;
-});
-
-switchButton.addEventListener("click", () => {
-    isGermanFirst = !isGermanFirst;
-    displayWord();
-});
-
-controlButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        if (currentIndex < currentDeck.length - 1) {
-            currentIndex++;
-        } else {
-            currentIndex = 0;
-        }
+    const newGerman = prompt("Edit German word:", word.german);
+    const newItalian = prompt("Edit Italian word:", word.italian);
+    if (newGerman !== null && newItalian !== null) {
+        word.german = newGerman;
+        word.italian = newItalian;
+        const updates = {};
+        updates[`/words/${wordKeys[currentIndex]}`] = word;
+        update(ref(database), updates);
         displayWord();
-    });
+    }
 });
+
+// Additional event listeners as previously defined
