@@ -46,9 +46,15 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = filterWords(data, deck);
-        currentIndex = 0;
-        displayWord();
+        let filteredWords;
+        if (deck === "All Words") {
+            filteredWords = Object.values(data); // No filter applied, take all words.
+        } else {
+            filteredWords = Object.values(data).filter(word =>
+                word.category && word.category.split(';').includes(deck)
+            );
+        }
+        displayWord(filteredWords); // Ensure this function handles an empty array properly.
     }, {
         onlyOnce: true
     });
