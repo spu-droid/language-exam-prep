@@ -109,6 +109,7 @@ const learningAlgorithm = {
     }
 };
 
+// DOMContentLoaded listener at the end of the file
 document.addEventListener("DOMContentLoaded", () => {
     learningAlgorithm.initialize();
     console.log("Learning algorithm initialized and ready.");
