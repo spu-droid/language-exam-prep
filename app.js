@@ -32,6 +32,7 @@ const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
 const controlButtons = document.querySelectorAll(".control-btn");
 const switchButton2 = document.getElementById("mode-switch");
+const modeDisplay2 = document.getElementById("mode2");
 
 let currentDeck = [];
 let currentIndex = 0;
