@@ -37,7 +37,28 @@ const learningAlgorithm = {
         this.controlButtons.forEach(button => button.disabled = this.mode === "View");
         modeDisplay2.textContent = `Card Mode: ${this.mode}`;
 
-    }
+    },
+	
+	controlButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        console.log("Control button clicked:", button.getAttribute("data-difficulty"));
+        if (button.getAttribute("data-difficulty") === "easy") {
+            console.log("Easy button pressed");
+            // Implement your Anki-like algorithm here for "easy"
+        } else if (button.getAttribute("data-difficulty") === "again") {
+            console.log("Again button pressed");
+            // Implement the action for "again"
+        } else if (button.getAttribute("data-difficulty") === "hard") {
+            console.log("Hard button pressed");
+            // Implement the action for "hard"
+        } else if (button.getAttribute("data-difficulty") === "good") {
+            console.log("Good button pressed");
+            // Implement the action for "good"
+        } else {
+            console.log("Unknown difficulty button pressed");
+            // Handle any other cases or ignore
+        }
+    });
 };
 
 // DOMContentLoaded listener at the end of the file
