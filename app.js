@@ -47,23 +47,14 @@ deckButtons.forEach(button => {
     });
 });
 
-switchButton2.addEventListener("click", () => {
-    if (mode === "View") {
-        mode = "Learn";
-        prevButton.disabled = true;
-        nextButton.disabled = true;
-        controlButtons.forEach(button => button.disabled = false);
-        modeDisplay2.textContent = "Card Mode: Learn";
-		alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
-    } else {
-        mode = "View";
-        prevButton.disabled = false;
-        nextButton.disabled = false;
-        controlButtons.forEach(button => button.disabled = true);
-        modeDisplay2.textContent = "Card Mode: View";
-		alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
-    }
-});
+
+learningAlgorithm.toggleMode(); // This method will now handle everything
+
+function runLearningAlgorithm() {
+    console.log("Learning algorithm is now running.");
+    // Place all the logic for your learning algorithm here.
+    // For example, manage cards, handle review intervals, etc.
+}
 
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
@@ -153,8 +144,17 @@ deleteButton.addEventListener("click", () => {
     }
 });
 
+deleteButton.addEventListener("click", () => {
+    if (confirm("Are you sure you want to delete this word?")) {
+        remove(ref(database, 'words/' + Object.keys(currentDeck)[currentIndex]));
+        fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
+    }
+});
+
+
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
+		console.log("Control button clicked");
         if (button.getAttribute("data-difficulty") === "easy") {
             // Implement your Anki-like algorithm here for "easy"
         } else {
@@ -162,3 +162,5 @@ controlButtons.forEach(button => {
         }
     });
 });
+
+
