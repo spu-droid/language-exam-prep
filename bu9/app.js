@@ -144,6 +144,13 @@ deleteButton.addEventListener("click", () => {
     }
 });
 
+deleteButton.addEventListener("click", () => {
+    if (confirm("Are you sure you want to delete this word?")) {
+        remove(ref(database, 'words/' + Object.keys(currentDeck)[currentIndex]));
+        fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
+    }
+});
+
 
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
