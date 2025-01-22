@@ -147,7 +147,7 @@ deleteButton.addEventListener("click", () => {
 
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
-		console.log("Toggle mode called. Current mode:", this.mode);
+		console.log("Control button clicked");
         if (button.getAttribute("data-difficulty") === "easy") {
             // Implement your Anki-like algorithm here for "easy"
         } else {
