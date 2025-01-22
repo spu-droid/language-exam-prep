@@ -68,9 +68,13 @@ switchButton2.addEventListener("click", () => {
 });
 */
 
+/*
 switchButton2.addEventListener("click", () => {
     learningAlgorithm.toggleMode(); // This method will now handle everything
 });
+*/
+
+learningAlgorithm.toggleMode(); // This method will now handle everything
 
 function runLearningAlgorithm() {
     console.log("Learning algorithm is now running.");

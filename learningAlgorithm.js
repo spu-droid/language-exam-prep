@@ -11,18 +11,14 @@ const learningAlgorithm = {
     },
 
     setupEventListeners: function() {
-        const modeSwitchButton = document.getElementById("mode-switch");
-        if (modeSwitchButton) {
-            modeSwitchButton.addEventListener("click", this.toggleMode.bind(this));
-            console.log("Event listener attached to mode-switch button.");
-        } else {
-            console.error("Mode switch button not found.");
-        }
-
-        this.controlButtons.forEach(btn => {
-            btn.addEventListener("click", (e) => this.handleCardControl(e.target.dataset.difficulty));
-        });
-    },
+		const modeSwitchButton = document.getElementById("mode-switch");
+		if (modeSwitchButton) {
+			modeSwitchButton.addEventListener("click", this.toggleMode.bind(this));
+			console.log("Event listener attached to mode-switch button.");
+		} else {
+			console.error("Mode switch button not found.");
+		}
+	},
 
 		toggleMode: function() {
 		console.log("Toggle mode called. Current mode:", this.mode);  // Log when function is called and the current mode
