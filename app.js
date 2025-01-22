@@ -35,6 +35,7 @@ const controlButtons = document.querySelectorAll(".control-btn");
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;
+let mode = "View";  // Default mode
 
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
@@ -42,6 +43,22 @@ deckButtons.forEach(button => {
         this.classList.add("active");
         fetchWords(this.getAttribute("data-deck"));
     });
+});
+
+switchButton.addEventListener("click", () => {
+    if (mode === "View") {
+        mode = "Learn";
+        prevButton.disabled = true;
+        nextButton.disabled = true;
+        controlButtons.forEach(button => button.disabled = false);
+        modeDisplay.textContent = "Card Mode: Learn";
+    } else {
+        mode = "View";
+        prevButton.disabled = false;
+        nextButton.disabled = false;
+        controlButtons.forEach(button => button.disabled = true);
+        modeDisplay.textContent = "Card Mode: View";
+    }
 });
 
 function fetchWords(deck) {
@@ -68,6 +85,10 @@ function displayWord() {
         modeDisplay.textContent = "";
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    controlButtons.forEach(button => button.disabled = true);  // Disable control buttons initially
+});
 
 showAnswerButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
