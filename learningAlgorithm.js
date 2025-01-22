@@ -24,37 +24,32 @@ const learningAlgorithm = {
         });
     },
 
-    toggleMode: function() {
-        this.mode = (this.mode === "View") ? "Learn" : "View";
-        console.log(`Mode toggled to: ${this.mode}`); // Diagnostic log
+		toggleMode: function() {
+		console.log("Toggle mode called. Current mode:", this.mode);  // Log when function is called and the current mode
 
-        const prevButton = document.getElementById("prev");
-        const nextButton = document.getElementById("next");
-        const modeDisplay2 = document.getElementById("mode2");
+		this.mode = (this.mode === "View") ? "Learn" : "View";
 
-        if (this.mode === "Learn") {
-            if(prevButton && nextButton && modeDisplay2) {
-                prevButton.disabled = true;
-                nextButton.disabled = true;
-                this.controlButtons.forEach(button => button.disabled = false);
-                modeDisplay2.textContent = "Card Mode: Learn";
-                alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
-                this.runLearningAlgorithm();
-            } else {
-                console.error("One or more control elements are missing.");
-            }
-        } else {
-            if(prevButton && nextButton && modeDisplay2) {
-                prevButton.disabled = false;
-                nextButton.disabled = false;
-                this.controlButtons.forEach(button => button.disabled = true);
-                modeDisplay2.textContent = "Card Mode: View";
-                alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
-            } else {
-                console.error("One or more control elements are missing.");
-            }
-        }
-    },
+		console.log("New mode after toggle:", this.mode);  // Log the new mode after toggle
+
+		const prevButton = document.getElementById("prev");
+		const nextButton = document.getElementById("next");
+		const modeDisplay2 = document.getElementById("mode2");
+
+		if (this.mode === "Learn") {
+			prevButton.disabled = true;
+			nextButton.disabled = true;
+			this.controlButtons.forEach(button => button.disabled = false);
+			modeDisplay2.textContent = "Card Mode: Learn";
+			alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
+			this.runLearningAlgorithm();
+		} else {
+			prevButton.disabled = false;
+			nextButton.disabled = false;
+			this.controlButtons.forEach(button => button.disabled = true);
+			modeDisplay2.textContent = "Card Mode: View";
+			alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
+		}
+	},
 
     handleCardControl: function(difficulty) {
         const minutesMap = { 'again': 1, 'hard': 6, 'easy': 10, 'good': 1440 }; // 1440 minutes in a day for "good"
