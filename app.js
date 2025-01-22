@@ -138,31 +138,39 @@ editButton.addEventListener("click", () => {
 });
 
 deleteButton.addEventListener("click", () => {
+    // Check if there's a valid word to delete
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const wordToDelete = currentDeck[currentIndex];
-        const wordRef = ref(database, `words/${wordToDelete.id}`); // Ensure the 'id' matches the key in Firebase
+
+        // Log the word and its key for verification
+        console.log("Word to delete:", wordToDelete);
+        console.log("Key of the word to delete:", wordToDelete.id);
 
         // Confirm deletion with the user
         if (confirm("Are you sure you want to delete this word?")) {
+            const wordRef = ref(database, `words/${wordToDelete.id}`);
             remove(wordRef).then(() => {
-                console.log("Word deleted successfully!");
+                console.log("Word deleted successfully from Firebase.");
 
-                // Update local state: Remove the word from currentDeck
+                // Remove the word from the current deck array
                 currentDeck.splice(currentIndex, 1);
-                // Update currentIndex to avoid pointing to a non-existent entry
+
+                // Adjust currentIndex if the last card was deleted
                 if (currentIndex >= currentDeck.length) {
-                    currentIndex = currentDeck.length - 1; // Adjust if necessary
+                    currentIndex = Math.max(0, currentDeck.length - 1); // Ensure index is not out of bounds
                 }
-                // Update the display
+
+                // Refresh the display to reflect the removal
                 displayWord();
             }).catch(error => {
                 console.error("Failed to delete word:", error);
             });
         }
     } else {
-        console.log("No word to delete!");
+        console.log("No word to delete or index out of bounds.");
     }
 });
+
 
 
 controlButtons.forEach(button => {
