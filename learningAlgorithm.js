@@ -1,3 +1,9 @@
+// DOMContentLoaded listener at the end of the file
+document.addEventListener("DOMContentLoaded", () => {
+    learningAlgorithm.initialize();
+    console.log("Learning algorithm initialized and ready.");
+});
+
 const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
@@ -70,8 +76,3 @@ const learningAlgorithm = {
     }
 };
 
-// DOMContentLoaded listener at the end of the file
-document.addEventListener("DOMContentLoaded", () => {
-    learningAlgorithm.initialize();
-    console.log("Learning algorithm initialized and ready.");
-});
