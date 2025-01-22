@@ -31,6 +31,7 @@ const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
 const controlButtons = document.querySelectorAll(".control-btn");
+const switchButton2 = document.getElementById("mode-switch");
 
 let currentDeck = [];
 let currentIndex = 0;
@@ -45,7 +46,7 @@ deckButtons.forEach(button => {
     });
 });
 
-switchButton.addEventListener("click", () => {
+switchButton2.addEventListener("click", () => {
     if (mode === "View") {
         mode = "Learn";
         prevButton.disabled = true;
