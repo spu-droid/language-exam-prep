@@ -45,9 +45,17 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = Object.entries(data).filter(([key, word]) => 
-            word.category && word.category.split(';').includes(deck)
-        );
+        if (deck === "All Words") {
+            // Fetch all words for 'All Words' deck
+            currentDeck = Object.entries(data).filter(([key, word]) =>
+                word.category && word.category.includes("All Words")
+            );
+        } else {
+            // Filter words by specific categories for other decks
+            currentDeck = Object.entries(data).filter(([key, word]) =>
+                word.category && word.category.split(';').includes(deck)
+            );
+        }
         currentIndex = 0;
         displayWord();
     }, {
