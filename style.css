@@ -49,9 +49,15 @@ button.active {
     border-radius: 50%; /* Makes buttons circular */
     width: 40px; /* Fixed width */
     height: 40px; /* Fixed height */
-    display: flex;
+    display: center;
     justify-content: center;
     align-items: center;
+}
+
+#navigation {
+    display: flex;          /* Enables flexbox layout */
+    align-items: center;    /* Centers items vertically in the container */
+    justify-content: center;/* Centers items horizontally in the container */
 }
 
 #card {
