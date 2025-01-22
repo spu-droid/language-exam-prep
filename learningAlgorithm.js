@@ -6,34 +6,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const learningAlgorithm = {
     mode: "View",
-    controlButtons: document.querySelectorAll(".control-btn"),
+    controlButtons: null,  // Initialize this as null here
     deckData: [],
     currentIndex: 0,
-    countdownTimers: [],  // This will also track daily visibility blocks
-    resetTimersDaily: [], // Tracks cards to be reset daily
+    countdownTimers: [],  
+    resetTimersDaily: [], 
 
     initialize: function() {
+        this.controlButtons = document.querySelectorAll(".control-btn");  // Now querying inside initialize
         this.setupEventListeners();
         this.toggleMode(false); // Initialize without alert
     },
 
     setupEventListeners: function() {
-		const modeSwitchButton = document.getElementById("mode-switch");
-		if (modeSwitchButton) {
-			modeSwitchButton.addEventListener("click", () => this.toggleMode(true)); // Ensures alerts are shown only on user action
-			console.log("Event listener attached to mode-switch button.");
-		} else {
-			console.error("Mode switch button not found.");
-		}
+        const modeSwitchButton = document.getElementById("mode-switch");
+        if (modeSwitchButton) {
+            modeSwitchButton.addEventListener("click", () => this.toggleMode(true));
+            console.log("Mode switch button listener attached.");
+        } else {
+            console.error("Mode switch button not found.");
+        }
 
-		// Setup event listeners for control buttons to show next card
-		this.controlButtons.forEach(button => {
-			button.addEventListener("click", () => {
-				console.log("Control button clicked: " + button.getAttribute("data-difficulty"));
-				this.showNextCard();
-			});
-		});
-	},
+        if (this.controlButtons) {
+            this.controlButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    console.log("Control button clicked: " + button.getAttribute("data-difficulty"));
+                    this.showNextCard();
+                });
+            });
+            console.log(`${this.controlButtons.length} control buttons found and listeners attached.`);
+        } else {
+            console.error("No control buttons found.");
+        }
+    },
 
 
     toggleMode: function(showAlert) {
