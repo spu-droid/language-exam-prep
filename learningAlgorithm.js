@@ -27,18 +27,13 @@ const learningAlgorithm = {
             console.error("Mode switch button not found.");
         }
 
-        if (this.controlButtons) {
-            this.controlButtons.forEach(button => {
-                button.addEventListener("click", () => {
-                    console.log("Control button clicked: " + button.getAttribute("data-difficulty"));
-                    this.showNextCard();
-                });
-            });
-            console.log(`${this.controlButtons.length} control buttons found and listeners attached.`);
-        } else {
-            console.error("No control buttons found.");
-        }
-    },
+		if (this.controlButtons && this.controlButtons.length > 0) {
+			this.controlButtons.forEach(button => {
+				// Your code here
+			});
+		} else {
+			console.error("Control buttons not found or not loaded.");
+		}
 
 
     toggleMode: function(showAlert) {
