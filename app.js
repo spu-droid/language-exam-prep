@@ -1,6 +1,6 @@
 // Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getDatabase, ref, onValue, push, remove, set } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -24,19 +24,15 @@ const card = document.getElementById("card");
 const wordCount = document.getElementById("word-count");
 const showAnswerButton = document.getElementById("show-answer");
 const switchButton = document.getElementById("switch");
-const controlButtons = document.querySelectorAll("#controls button");
+const controlButtons = document.querySelectorAll(".control-btn");
 const modeDisplay = document.getElementById("mode");
-const addButton = document.getElementById("add");
-const editButton = document.getElementById("edit");
-const deleteButton = document.getElementById("delete");
+const deleteButton = document.getElementById("delete"); // Delete button
 
-// Default settings
 let currentDeck = [];
 let currentIndex = 0;
-let currentKey = null;
-let isGermanFirst = true;  // Default to show German word first
+let currentWordKey = null;  // To keep track of the current word's key
+let isGermanFirst = true;
 
-// Event listeners for deck selection buttons
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
         deckButtons.forEach(btn => btn.classList.remove("active"));
@@ -45,24 +41,13 @@ deckButtons.forEach(button => {
     });
 });
 
-// Fetch words from Firebase based on the selected category
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        if (deck === "All Words") {
-            currentDeck = Object.entries(data).map(([key, word]) => ({
-                key,
-                ...word
-            }));
-        } else {
-            currentDeck = Object.entries(data).filter(([key, word]) =>
-                word.category && word.category.split(';').includes(deck)
-            ).map(([key, word]) => ({
-                key,
-                ...word
-            }));
-        }
+        currentDeck = Object.entries(data).filter(([key, word]) => 
+            word.category && word.category.split(';').includes(deck)
+        );
         currentIndex = 0;
         displayWord();
     }, {
@@ -70,11 +55,10 @@ function fetchWords(deck) {
     });
 }
 
-// Display the current word on the card
 function displayWord() {
-    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const word = currentDeck[currentIndex];
-        currentKey = word.key;  // Store current word's Firebase key
+    if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
+        const [key, word] = currentDeck[currentIndex];
+        currentWordKey = key;  // Store current word's key
         card.innerHTML = isGermanFirst ? word.german : word.italian;
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
         modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
@@ -85,64 +69,34 @@ function displayWord() {
     }
 }
 
-// Toggle language
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex][1];  // Adjusted to access tuple
+    card.innerHTML = isGermanFirst ? word.italian : word.german;
+});
+
 switchButton.addEventListener("click", () => {
     isGermanFirst = !isGermanFirst;
     displayWord();
 });
 
-// Show the answer for the current card
-showAnswerButton.addEventListener("click", () => {
-    const word = currentDeck[currentIndex];
-    card.innerHTML = isGermanFirst ? word.italian : word.german;
-});
-
-// Control buttons logic: Easy, Medium, Hard (currently just navigates through cards)
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
         if (currentIndex < currentDeck.length - 1) {
             currentIndex++;
         } else {
-            currentIndex = 0; // Loop back to the first card
+            currentIndex = 0;  // Loop back to the first card
         }
         displayWord();
     });
 });
 
-// Add a new card
-addButton.addEventListener("click", () => {
-    const newItalian = prompt("Enter new Italian word:");
-    const newGerman = prompt("Enter new German word:");
-    if (newItalian && newGerman) {
-        const selectedDeck = document.querySelector(".deck-btn.active").getAttribute("data-deck");
-        const newWord = {
-            italian: newItalian,
-            german: newGerman,
-            category: selectedDeck + ";All Words"  // Adds to selected and All Words deck
-        };
-        push(ref(database, 'words'), newWord);
-    }
-});
-
-// Edit the current card
-editButton.addEventListener("click", () => {
-    const word = currentDeck[currentIndex];
-    const updatedItalian = prompt("Update Italian word:", word.italian);
-    const updatedGerman = prompt("Update German word:", word.german);
-    if (updatedItalian && updatedGerman) {
-        set(ref(database, `words/${currentKey}`), {
-            ...word,
-            italian: updatedItalian,
-            german: updatedGerman
-        });
-    }
-});
-
-// Delete the current card
 deleteButton.addEventListener("click", () => {
-    if (currentKey) {
-        remove(ref(database, `words/${currentKey}`));
-        currentDeck.splice(currentIndex, 1);  // Remove from local array
-        displayWord();  // Refresh display
+    if (currentWordKey) {
+        remove(ref(database, `words/${currentWordKey}`))
+            .then(() => {
+                console.log("Word deleted successfully.");
+                fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
+            })
+            .catch(error => console.error("Error deleting word:", error));
     }
 });
