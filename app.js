@@ -54,12 +54,14 @@ switchButton2.addEventListener("click", () => {
         nextButton.disabled = true;
         controlButtons.forEach(button => button.disabled = false);
         modeDisplay2.textContent = "Card Mode: Learn";
+		alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
     } else {
         mode = "View";
         prevButton.disabled = false;
         nextButton.disabled = false;
         controlButtons.forEach(button => button.disabled = true);
         modeDisplay2.textContent = "Card Mode: View";
+		alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
     }
 });
 
