@@ -144,6 +144,7 @@ deleteButton.addEventListener("click", () => {
     }
 });
 
+/*
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
         if (button.getAttribute("data-difficulty") === "easy") {
@@ -153,4 +154,5 @@ controlButtons.forEach(button => {
         }
     });
 });
+*/
 
