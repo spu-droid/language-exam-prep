@@ -58,7 +58,7 @@ const learningAlgorithm = {
             console.log("Unknown difficulty button pressed");
             // Handle any other cases or ignore
         }
-    });
+    }
 };
 
 // DOMContentLoaded listener at the end of the file
