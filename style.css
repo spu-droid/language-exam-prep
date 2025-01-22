@@ -42,56 +42,44 @@ button.active {
 }
 
 #card {
-    display: flex; /* Using flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    text-align: center;
-    font-size: 1.5rem;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    min-height: 100px; /* Adjust this if needed */
-    width: 60%;
-    margin: auto; /* Centers the card horizontally on the page */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 1.5rem;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  min-height: 100px; /* Adjust this if needed */
+  width: 60%;
+  margin: auto; /* Centers the card horizontally on the page */
 }
 
 .control-btn {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
 }
 
 .control-btn:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 #prev, #next {
-    font-size: 1.5rem;
-    padding: 5px 10px;
-    cursor: pointer;
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 #prev:hover, #next:hover {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 #mode, #word-count {
-    text-align: center;
-    color: #333;
-    font-size: 0.9rem;
-    margin-top: 10px; /* Adjust spacing as needed */
-}
-
-#controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-footer p, #mode {
-    color: #333;
-    font-size: 0.9rem;
-    text-align: center;
+  text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+  margin-top: 10px; /* Adjust spacing as needed */
 }
