@@ -61,12 +61,15 @@ controlButtons.forEach(button => {
         } else if (button.getAttribute("data-difficulty") === "again") {
             console.log("Again button pressed");
             // Implement the action for "again"
+			learningFlashcards(deck);
         } else if (button.getAttribute("data-difficulty") === "hard") {
             console.log("Hard button pressed");
             // Implement the action for "hard"
+			learningFlashcards(deck);
         } else if (button.getAttribute("data-difficulty") === "good") {
             console.log("Good button pressed");
             // Implement the action for "good"
+			learningFlashcards(deck);
         } else {
             console.log("Unknown difficulty button pressed");
             // Handle any other cases or ignore
@@ -74,3 +77,22 @@ controlButtons.forEach(button => {
     });
 });
 
+function learningFlashcards(deck) {
+    const wordsRef = ref(database, 'words');
+    onValue(wordsRef, snapshot => {
+        const data = snapshot.val();
+        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
+        currentIndex = 0;
+        nextAvailableWord();
+    }, {
+        onlyOnce: true
+    });
+}
+
+function nextAvailableWord() {
+    const today = new Date().toLocaleDateString('en-GB');
+    while (currentIndex < currentDeck.length && currentDeck[currentIndex].lock_date === today) {
+        currentIndex++; // Skip the word locked for today
+    }
+    displayWord(); // Display the next available word
+}
