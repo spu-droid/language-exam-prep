@@ -175,6 +175,11 @@ controlButtons.forEach(button => {
         if (button.getAttribute("data-difficulty") === "easy") {
             console.log("Easy button pressed");
             // Implement your Anki-like algorithm here for "easy"
+			const today = new Date().toLocaleDateString('en-GB');
+			const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
+            update(wordRef, { lock_date: today })
+                .then(() => console.log("Lock date set to today:", today))
+                .catch(error => console.error("Failed to set lock date:", error));
         } else if (button.getAttribute("data-difficulty") === "again") {
             console.log("Again button pressed");
             // Implement the action for "again"
