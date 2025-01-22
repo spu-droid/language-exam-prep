@@ -45,32 +45,3 @@ document.addEventListener("DOMContentLoaded", () => {
     learningAlgorithm.initialize();
     console.log("Learning algorithm initialized and ready.");
 });
-
-
-controlButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        console.log("Control button clicked:", button.getAttribute("data-difficulty"));
-        if (button.getAttribute("data-difficulty") === "easy") {
-            console.log("Easy button pressed");
-            // Implement your Anki-like algorithm here for "easy"
-			const today = new Date().toLocaleDateString('en-GB');
-			const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
-            update(wordRef, { lock_date: today })
-                .then(() => console.log("Lock date set to today:", today))
-                .catch(error => console.error("Failed to set lock date:", error));
-        } else if (button.getAttribute("data-difficulty") === "again") {
-            console.log("Again button pressed");
-            // Implement the action for "again"
-        } else if (button.getAttribute("data-difficulty") === "hard") {
-            console.log("Hard button pressed");
-            // Implement the action for "hard"
-        } else if (button.getAttribute("data-difficulty") === "good") {
-            console.log("Good button pressed");
-            // Implement the action for "good"
-        } else {
-            console.log("Unknown difficulty button pressed");
-            // Handle any other cases or ignore
-        }
-    });
-});
-
