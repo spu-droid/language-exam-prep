@@ -47,7 +47,6 @@ deckButtons.forEach(button => {
     });
 });
 
-/*
 switchButton2.addEventListener("click", () => {
     if (mode === "View") {
         mode = "Learn";
@@ -56,7 +55,6 @@ switchButton2.addEventListener("click", () => {
         controlButtons.forEach(button => button.disabled = false);
         modeDisplay2.textContent = "Card Mode: Learn";
 		alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
-		runLearningAlgorithm();  // Function defined in learningAlgorithm.js
     } else {
         mode = "View";
         prevButton.disabled = false;
@@ -66,17 +64,6 @@ switchButton2.addEventListener("click", () => {
 		alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
     }
 });
-*/
-
-switchButton2.addEventListener("click", () => {
-    learningAlgorithm.toggleMode(); // This method will now handle everything
-});
-
-function runLearningAlgorithm() {
-    console.log("Learning algorithm is now running.");
-    // Place all the logic for your learning algorithm here.
-    // For example, manage cards, handle review intervals, etc.
-}
 
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
@@ -175,4 +162,3 @@ controlButtons.forEach(button => {
         }
     });
 });
-
