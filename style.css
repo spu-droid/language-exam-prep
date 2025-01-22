@@ -41,14 +41,7 @@ button.active {
   color: #000; /* Change the text color if necessary for better visibility */
 }
 
-#deck {
-  display: flex; /* Aligns children (card and buttons) in a row */
-  justify-content: center; /* Centers items horizontally */
-  align-items: center; /* Centers items vertically */
-  width: 100%;
-}
-
-#prev, #next {
+#prev {
     font-size: 1.5rem;
     padding: 5px 10px;
     cursor: pointer;
@@ -61,26 +54,31 @@ button.active {
     align-items: center;
 }
 
-#prev {
-  margin-right: 20px; /* Adds spacing between the button and card */
-}
-
 #next {
-  margin-left: 20px; /* Adds spacing between the button and card */
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f4f4f4; /* Background for visibility */
+    border-radius: 50%; /* Makes buttons circular */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #card {
-  display: flex; /* Using flexbox */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  text-align: center;
-  font-size: 1.5rem;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  min-height: 100px; /* Adjust this if needed */
-  width: 60%;
-  margin: 0 10px; /* Maintains spacing for visual consistency */
+    display: flex; /* Using flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+    font-size: 1.5rem;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    min-height: 100px; /* Adjust this if needed */
+    width: 60%;
+    margin: auto; /* Centers the card horizontally on the page */
 }
 
 #mode, #word-count {
