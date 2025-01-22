@@ -25,14 +25,17 @@
 			<button class="deck-btn" data-deck="Unita 8">Unità 8</button>
 			<button class="deck-btn" data-deck="Other Words">Other Words</button>
 			<button class="deck-btn" data-deck="Parolacce">Parolacce</button>
-            <!-- Add all unit buttons -->
         </div>
         <div id="deck">
             <h2>Flashcards</h2>
-            <div id="card" style="text-align: center; font-size: 1.5rem; background: white; border: 1px solid #ccc; padding: 20px; min-height: 100px; width: 60%; margin: auto;">Select a deck to start!</div>
-			<button id="delete">Delete</button> <!-- delete button -->
-            <button id="edit">Edit</button> <!-- Edit button -->
-			<button id="add">Add</button> <!-- Add button -->
+            <button class="control-btn" id="prev">&lt;</button>
+            <div id="card" style="display: inline-block; text-align: center; font-size: 1.5rem; background: white; border: 1px solid #ccc; padding: 20px; min-height: 100px; width: 300px;">Select a deck to start!</div>
+            <button class="control-btn" id="next">&gt;</button>
+            <div>
+                <button id="delete">Delete</button> <!-- Delete button -->
+                <button id="edit">Edit</button> <!-- Edit button -->
+                <button id="add">Add</button> <!-- Add button -->
+            </div>
             <p id="mode" style="text-align: center; color: #333; font-size: 0.9rem;">Mode: DE-IT</p>
             <p id="word-count" style="text-align: center; color: #333; font-size: 0.9rem;">Words in total: 0</p>
             <button id="show-answer">Show Answer</button>
@@ -46,7 +49,7 @@
         </div>
     </main>
     <footer>
-        <p>Version: V49</p>
+        <p>Version: V45</p>
     </footer>
     <script type="module" src="app.js"></script>
 </body>
