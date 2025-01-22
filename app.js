@@ -61,9 +61,11 @@ function fetchWords(deck) {
     });
 }
 
+// Function to display the current word on the card, modified to show just the first word initially
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
+        // Only show the initial word when first displaying the flashcard
         card.innerHTML = isGermanFirst ? word.german : word.italian;
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
         modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
@@ -108,16 +110,19 @@ deleteButton.addEventListener("click", () => {
     }
 });
 
-// Event listeners for Show Answer, Switch, and Difficulty buttons
+// Event listener for the Show Answer button
 showAnswerButton.addEventListener("click", () => {
     const word = currentDeck[currentIndex];
-    card.innerHTML = isGermanFirst ? word.italian : word.german;
+    // Update to display both the German and Italian words together after clicking "Show Answer"
+    card.innerHTML = isGermanFirst ? `${word.german}: ${word.italian}` : `${word.italian}: ${word.german}`;
 });
 
+// Event listener for the Switch button
 switchButton.addEventListener("click", () => {
     isGermanFirst = !isGermanFirst;
-    displayWord();
+    displayWord();  // Ensure this function adjusts display based on isGermanFirst
 });
+
 
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
