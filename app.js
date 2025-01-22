@@ -34,6 +34,11 @@ const controlButtons = document.querySelectorAll(".control-btn");
 const switchButton2 = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
 
+// Export variables and functions that need to be accessed in learningAlgorithm.js
+export const controlButtons = document.querySelectorAll(".control-btn");
+export const database = getDatabase(app);
+// Export other elements or functions as needed
+
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;

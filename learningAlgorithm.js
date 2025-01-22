@@ -1,3 +1,7 @@
+// Access the global variables from window object
+const controlButtons = window.controlButtons;
+const database = window.database;
+
 const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
