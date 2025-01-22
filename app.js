@@ -138,38 +138,35 @@ editButton.addEventListener("click", () => {
 });
 
 deleteButton.addEventListener("click", () => {
-    // Check if there's a valid word to delete
+    console.log("Clicked delete the word");
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const wordToDelete = currentDeck[currentIndex];
 
-        // Log the word and its key for verification
-        console.log("Word to delete:", wordToDelete);
-        console.log("Key of the word to delete:", wordToDelete.id);
-
-        // Confirm deletion with the user
-        if (confirm("Are you sure you want to delete this word?")) {
+        // Ensure we have the Firebase key to delete the word
+        if (wordToDelete.id) {
+            console.log("Deleting word with ID:", wordToDelete.id);
             const wordRef = ref(database, `words/${wordToDelete.id}`);
-            remove(wordRef).then(() => {
-                console.log("Word deleted successfully from Firebase.");
 
-                // Remove the word from the current deck array
-                currentDeck.splice(currentIndex, 1);
-
-                // Adjust currentIndex if the last card was deleted
-                if (currentIndex >= currentDeck.length) {
-                    currentIndex = Math.max(0, currentDeck.length - 1); // Ensure index is not out of bounds
-                }
-
-                // Refresh the display to reflect the removal
-                displayWord();
-            }).catch(error => {
-                console.error("Failed to delete word:", error);
-            });
+            if (confirm("Are you sure you want to delete this word?")) {
+                remove(wordRef).then(() => {
+                    console.log("Word deleted successfully from Firebase.");
+                    currentDeck.splice(currentIndex, 1);
+                    if (currentIndex >= currentDeck.length) {
+                        currentIndex = currentDeck.length - 1;
+                    }
+                    displayWord();
+                }).catch(error => {
+                    console.error("Failed to delete word:", error);
+                });
+            }
+        } else {
+            console.log("No valid ID found for the word to delete.");
         }
     } else {
-        console.log("No word to delete or index out of bounds.");
+        console.log("No word selected or deck is empty.");
     }
 });
+
 
 
 
