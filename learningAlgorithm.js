@@ -43,22 +43,6 @@ const learningAlgorithm = {
         modeDisplay2.textContent = `Card Mode: ${this.mode}`;
 
         if (showAlert) alert(`Control buttons are now ${this.mode === "Learn" ? "ENABLED" : "DISABLED"}, < > buttons are ${this.mode === "Learn" ? "DISABLED" : "ENABLED"}.`);
-    },
-
-    showNextCard: function() {
-        this.currentIndex = (this.currentIndex + 1) % this.deckData.length;
-        this.displayCard(this.currentIndex);
-    },
-
-    displayCard: function(index) {
-        const cardElement = document.getElementById('card');
-        const card = this.deckData[index];
-        if (cardElement) {
-            cardElement.textContent = card.german; // Assuming German is the default language
-            document.getElementById('word-count').textContent = `Words in total: ${this.deckData.length}`;
-        } else {
-            console.error("Card element not found for display.");
-        }
     }
 };
 
