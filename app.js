@@ -74,13 +74,19 @@ function displayWord() {
     }
 }
 
-// Add new word
 addButton.addEventListener("click", () => {
+    const selectedDeck = document.querySelector('.deck-btn.active').getAttribute('data-deck');
+    if (selectedDeck === "All Words") {
+        alert("Add words to any other deck.");
+        return; // Prevent adding when "All Words" is selected
+    }
     const italian = prompt("Enter Italian word:");
     const german = prompt("Enter German translation:");
-    const category = document.querySelector('.deck-btn.active').getAttribute('data-deck') + ";All Words";
-    const newWord = { italian, german, category };
-    push(ref(database, 'words'), newWord);
+    if (italian && german) {
+        const category = selectedDeck + ";All Words";  // Adds to selected and All Words deck
+        const newWord = { italian, german, category };
+        push(ref(database, 'words'), newWord);
+    }
 });
 
 // Edit current word
