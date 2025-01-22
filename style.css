@@ -55,6 +55,28 @@ button.active {
     margin: auto; /* Centers the card horizontally on the page */
 }
 
+.control-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    background-color: #e0e0e0;
+}
+
+#prev, #next {
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#prev:hover, #next:hover {
+    background-color: #ddd;
+}
+
 #mode, #word-count {
     text-align: center;
     color: #333;
@@ -67,7 +89,6 @@ button.active {
   justify-content: center;
   gap: 10px;
 }
-
 
 footer p, #mode {
     color: #333;
