@@ -17,9 +17,6 @@ header {
 main {
   margin: 1rem auto;
   max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 button {
@@ -39,52 +36,43 @@ button:hover {
 }
 
 button.active {
-  background: #ccc;
-  font-weight: bold;
-  color: #000;
-}
-
-#deck {
-  display: flex; /* Aligns children (card and buttons) in a row */
-  justify-content: center; /* Centers items horizontally */
-  align-items: center; /* Centers items vertically */
-  width: 100%;
-}
-
-#card {
-  flex-grow: 1;
-  text-align: center;
-  font-size: 1.5rem;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  min-height: 100px;
-  margin: 0 10px; /* Space between buttons and card */
-  width: 60%;
+  background: #ccc; /* Make the button a bit more gray when selected */
+  font-weight: bold; /* Optionally, make the font bolder */
+  color: #000; /* Change the text color if necessary for better visibility */
 }
 
 #prev, #next {
-  font-size: 1.5rem;
-  padding: 5px 10px;
-  cursor: pointer;
-  background-color: #f4f4f4;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f4f4f4; /* Background for visibility */
+    border-radius: 50%; /* Makes buttons circular */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#prev:hover, #next:hover {
-  background-color: #ddd;
+#card {
+    display: flex; /* Using flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+    font-size: 1.5rem;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    min-height: 100px; /* Adjust this if needed */
+    width: 60%;
+    margin: auto; /* Centers the card horizontally on the page */
 }
 
 #mode, #word-count {
-  text-align: center;
-  color: #333;
-  font-size: 0.9rem;
-  margin-top: 10px;
+    text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+    margin-top: 10px; /* Adjust spacing as needed */
 }
 
 #controls {
@@ -93,10 +81,11 @@ button.active {
   gap: 10px;
 }
 
+
 footer p, #mode {
-  color: #333;
-  font-size: 0.9rem;
-  text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 
