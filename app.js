@@ -60,7 +60,7 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = Object.values(data).filter(word => word.category && word.category.includes(deck));
+        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
         currentIndex = 0;
         displayWord();
     }, {
@@ -141,6 +141,7 @@ deleteButton.addEventListener("click", () => {
     console.log("Clicked delete the word");
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const wordToDelete = currentDeck[currentIndex];
+        console.log("Word to delete:", wordToDelete, "ID:", wordToDelete.id);  // Log the word and its ID
 
         // Ensure we have the Firebase key to delete the word
         if (wordToDelete.id) {
@@ -166,6 +167,7 @@ deleteButton.addEventListener("click", () => {
         console.log("No word selected or deck is empty.");
     }
 });
+
 
 
 
