@@ -138,13 +138,23 @@ editButton.addEventListener("click", () => {
 });
 
 deleteButton.addEventListener("click", () => {
-	console.log("Clicked delete the word");
+    console.log("Clicked delete the word");
     if (confirm("Are you sure you want to delete this word?")) {
-        remove(ref(database, 'words/' + Object.keys(currentDeck)[currentIndex]));
-        fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
+        // Assuming currentDeck contains the actual Firebase keys or the word objects have a property that stores their keys
+        const wordToDelete = currentDeck[currentIndex];
+        const keyToDelete = wordToDelete.key; // Make sure your word objects have a 'key' property that stores their Firebase key
+
+        remove(ref(database, `words/${keyToDelete}`))
+            .then(() => {
+                console.log("Delete successful");
+                // Fetch new words to update the UI after deletion
+                fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
+            })
+            .catch(error => {
+                console.error("Delete failed:", error);
+            });
     }
 });
-
 
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
