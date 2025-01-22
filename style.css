@@ -36,49 +36,41 @@ button:hover {
 }
 
 button.active {
-  background: #ccc;
-  font-weight: bold;
-  color: #000;
+  background: #ccc; /* Make the button a bit more gray when selected */
+  font-weight: bold; /* Optionally, make the font bolder */
+  color: #000; /* Change the text color if necessary for better visibility */
 }
 
 #card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  min-height: 100px;
-  width: 60%;
-  margin: auto;
-}
-
-#prev, #next {
-  font-size: 1.5rem;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-#prev:hover, #next:hover {
-  background-color: #ddd;
+    display: flex; /* Using flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+    font-size: 1.5rem;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    min-height: 100px; /* Adjust this if needed */
+    width: 60%;
+    margin: auto; /* Centers the card horizontally on the page */
 }
 
 #mode, #word-count {
-  text-align: center;
-  color: #333;
-  font-size: 0.9rem;
-  margin-top: 10px;
+    text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+    margin-top: 10px; /* Adjust spacing as needed */
 }
 
-.control-btn {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
-.control-btn:hover {
-  background-color: #e0e0e0;
+
+footer p, #mode {
+    color: #333;
+    font-size: 0.9rem;
+    text-align: center;
 }

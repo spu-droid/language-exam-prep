@@ -16,26 +16,30 @@
             <h2>Select a Deck</h2>
             <button class="deck-btn" data-deck="All Words">All Words</button>
             <button class="deck-btn" data-deck="Unita 1">Unità 1</button>
-			<button class="deck-btn" data-deck="Unita 2">Unità 2</button>
-			<button class="deck-btn" data-deck="Unita 3">Unità 3</button>
-			<button class="deck-btn" data-deck="Unita 4">Unità 4</button>
-			<button class="deck-btn" data-deck="Unita 5">Unità 5</button>
-			<button class="deck-btn" data-deck="Unita 6">Unità 6</button>
-			<button class="deck-btn" data-deck="Unita 7">Unità 7</button>
-			<button class="deck-btn" data-deck="Unita 8">Unità 8</button>
-			<button class="deck-btn" data-deck="Other Words">Other Words</button>
+            <button class="deck-btn" data-deck="Unita 2">Unità 2</button>
+            <button class="deck-btn" data-deck="Unita 3">Unità 3</button>
+            <button class="deck-btn" data-deck="Unita 4">Unità 4</button>
+            <button class="deck-btn" data-deck="Unita 5">Unità 5</button>
+            <button class="deck-btn" data-deck="Unita 6">Unità 6</button>
+            <button class="deck-btn" data-deck="Unita 7">Unità 7</button>
+            <button class="deck-btn" data-deck="Unita 8">Unità 8</button>
+            <button class="deck-btn" data-deck="Other Words">Other Words</button>
 			<button class="deck-btn" data-deck="Parolacce">Parolacce</button>
         </div>
         <div id="deck">
             <h2>Flashcards</h2>
-            <button id="prev">&lt;</button>
-            <div id="card">Select a deck to start!</div>
-            <button id="next">&gt;</button>
-            <button id="delete">Delete</button> <!-- delete button -->
-            <button id="edit">Edit</button> <!-- Edit button -->
-            <button id="add">Add</button> <!-- Add button -->
+            <div id="navigation">
+                <button id="prev">&lt;</button>
+                <div id="card">Select a deck to start!</div>
+                <button id="next">&gt;</button>
+            </div>
+            <button id="delete">Delete</button>
+            <button id="edit">Edit</button>
+            <button id="add">Add</button>
             <p id="mode">Mode: DE-IT</p>
             <p id="word-count">Words in total: 0</p>
+            <button id="show-answer">Show Answer</button>
+            <button id="switch">Switch</button>
             <div id="controls">
                 <button class="control-btn" data-difficulty="again">Again</button>
                 <button class="control-btn" data-difficulty="hard">Hard</button>
@@ -45,8 +49,10 @@
         </div>
     </main>
     <footer>
-        <p>Version: V44</p>
+        <p>Version: V45</p>
     </footer>
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
+
