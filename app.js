@@ -53,13 +53,13 @@ switchButton2.addEventListener("click", () => {
         prevButton.disabled = true;
         nextButton.disabled = true;
         controlButtons.forEach(button => button.disabled = false);
-        modeDisplay.textContent = "Card Mode: Learn";
+        modeDisplay2.textContent = "Card Mode: Learn";
     } else {
         mode = "View";
         prevButton.disabled = false;
         nextButton.disabled = false;
         controlButtons.forEach(button => button.disabled = true);
-        modeDisplay.textContent = "Card Mode: View";
+        modeDisplay2.textContent = "Card Mode: View";
     }
 });
 
