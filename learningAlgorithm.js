@@ -11,44 +11,55 @@ const learningAlgorithm = {
     },
 
     setupEventListeners: function() {
-        document.getElementById("mode-switch").addEventListener("click", this.toggleMode.bind(this));
+        const modeSwitchButton = document.getElementById("mode-switch");
+        if (modeSwitchButton) {
+            modeSwitchButton.addEventListener("click", this.toggleMode.bind(this));
+            console.log("Event listener attached to mode-switch button.");
+        } else {
+            console.error("Mode switch button not found.");
+        }
+
         this.controlButtons.forEach(btn => {
             btn.addEventListener("click", (e) => this.handleCardControl(e.target.dataset.difficulty));
         });
     },
 
-    loadDeckData: function(deck) {
-        this.deckData = deck;  // Assume 'deck' is passed from app.js
-        this.currentIndex = 0;
-        this.showNextCard();
-    },
-
     toggleMode: function() {
         this.mode = (this.mode === "View") ? "Learn" : "View";
+        console.log(`Mode toggled to: ${this.mode}`); // Diagnostic log
+
         const prevButton = document.getElementById("prev");
         const nextButton = document.getElementById("next");
         const modeDisplay2 = document.getElementById("mode2");
 
         if (this.mode === "Learn") {
-            prevButton.disabled = true;
-            nextButton.disabled = true;
-            this.controlButtons.forEach(button => button.disabled = false);
-            modeDisplay2.textContent = "Card Mode: Learn";
-            alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
-            this.runLearningAlgorithm();
+            if(prevButton && nextButton && modeDisplay2) {
+                prevButton.disabled = true;
+                nextButton.disabled = true;
+                this.controlButtons.forEach(button => button.disabled = false);
+                modeDisplay2.textContent = "Card Mode: Learn";
+                alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
+                this.runLearningAlgorithm();
+            } else {
+                console.error("One or more control elements are missing.");
+            }
         } else {
-            prevButton.disabled = false;
-            nextButton.disabled = false;
-            this.controlButtons.forEach(button => button.disabled = true);
-            modeDisplay2.textContent = "Card Mode: View";
-            alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
+            if(prevButton && nextButton && modeDisplay2) {
+                prevButton.disabled = false;
+                nextButton.disabled = false;
+                this.controlButtons.forEach(button => button.disabled = true);
+                modeDisplay2.textContent = "Card Mode: View";
+                alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
+            } else {
+                console.error("One or more control elements are missing.");
+            }
         }
     },
 
     handleCardControl: function(difficulty) {
         const minutesMap = { 'again': 1, 'hard': 6, 'easy': 10, 'good': 1440 }; // 1440 minutes in a day for "good"
         const minutes = minutesMap[difficulty];
-        
+
         if (difficulty === "good") {
             this.markCardGoodForDay(this.currentIndex);
         } else {
@@ -71,8 +82,13 @@ const learningAlgorithm = {
     },
 
     updateUI: function() {
-        document.getElementById("mode2").textContent = `Card Mode: ${this.mode}`;
-        this.controlButtons.forEach(button => button.disabled = (this.mode === "View"));
+        const modeDisplay2 = document.getElementById("mode2");
+        if(modeDisplay2) {
+            modeDisplay2.textContent = `Card Mode: ${this.mode}`;
+            this.controlButtons.forEach(button => button.disabled = (this.mode === "View"));
+        } else {
+            console.error("Failed to update UI: mode display element not found.");
+        }
     },
 
     showNextCard: function() {
@@ -82,9 +98,13 @@ const learningAlgorithm = {
 
     displayCard: function(index) {
         const cardElement = document.getElementById('card');
-        const card = this.deckData[index];
-        cardElement.textContent = card.german; // Assuming german is the default language
-        document.getElementById('word-count').textContent = `Words in total: ${this.deckData.length}`;
+        if(cardElement) {
+            const card = this.deckData[index];
+            cardElement.textContent = card.german; // Assuming German is the default language
+            document.getElementById('word-count').textContent = `Words in total: ${this.deckData.length}`;
+        } else {
+            console.error("Card element not found for display.");
+        }
     },
 
     runLearningAlgorithm: function() {
@@ -100,4 +120,5 @@ const learningAlgorithm = {
 
 document.addEventListener("DOMContentLoaded", () => {
     learningAlgorithm.initialize();
+    console.log("Learning algorithm initialized and ready.");
 });
