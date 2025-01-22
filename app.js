@@ -47,32 +47,6 @@ deckButtons.forEach(button => {
     });
 });
 
-/*
-switchButton2.addEventListener("click", () => {
-    if (mode === "View") {
-        mode = "Learn";
-        prevButton.disabled = true;
-        nextButton.disabled = true;
-        controlButtons.forEach(button => button.disabled = false);
-        modeDisplay2.textContent = "Card Mode: Learn";
-		alert("Again, Hard, Good and Easy Buttons are now ENABLED, < > buttons are DISABLED.");
-		runLearningAlgorithm();  // Function defined in learningAlgorithm.js
-    } else {
-        mode = "View";
-        prevButton.disabled = false;
-        nextButton.disabled = false;
-        controlButtons.forEach(button => button.disabled = true);
-        modeDisplay2.textContent = "Card Mode: View";
-		alert("Again, Hard, Good and Easy Buttons are now DISABLED, < > buttons are ENABLED.");
-    }
-});
-*/
-
-/*
-switchButton2.addEventListener("click", () => {
-    learningAlgorithm.toggleMode(); // This method will now handle everything
-});
-*/
 
 learningAlgorithm.toggleMode(); // This method will now handle everything
 
