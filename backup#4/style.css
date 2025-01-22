@@ -1,0 +1,76 @@
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  text-align: center;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
+}
+
+main {
+  margin: 1rem auto;
+  max-width: 600px;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  margin: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  background: #f4f4f4;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+button:hover {
+  background: #ddd;
+}
+
+button.active {
+  background: #ccc; /* Make the button a bit more gray when selected */
+  font-weight: bold; /* Optionally, make the font bolder */
+  color: #000; /* Change the text color if necessary for better visibility */
+}
+
+#card {
+    display: flex; /* Using flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+    font-size: 1.5rem;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    min-height: 100px; /* Adjust this if needed */
+    width: 60%;
+    margin: auto; /* Centers the card horizontally on the page */
+}
+
+#mode, #word-count {
+    text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+    margin-top: 10px; /* Adjust spacing as needed */
+}
+
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+
+footer p, #mode {
+    color: #333;
+    font-size: 0.9rem;
+    text-align: center;
+}
