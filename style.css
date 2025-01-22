@@ -17,6 +17,9 @@ header {
 main {
   margin: 1rem auto;
   max-width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -36,56 +39,46 @@ button:hover {
 }
 
 button.active {
-  background: #ccc; /* Make the button a bit more gray when selected */
-  font-weight: bold; /* Optionally, make the font bolder */
-  color: #000; /* Change the text color if necessary for better visibility */
+  background: #ccc;
+  font-weight: bold;
+  color: #000;
 }
 
-#prev{
-    font-size: 1.5rem;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #f4f4f4; /* Background for visibility */
-    border-radius: 50%; /* Makes buttons circular */
-    width: 40px; /* Fixed width */
-    height: 40px; /* Fixed height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#card-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-#next {
-    font-size: 1.5rem;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #f4f4f4; /* Background for visibility */
-    border-radius: 50%; /* Makes buttons circular */
-    width: 40px; /* Fixed width */
-    height: 40px; /* Fixed height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#prev, #next {
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #f4f4f4;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #card {
-    display: flex; /* Using flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    text-align: center;
-    font-size: 1.5rem;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    min-height: 100px; /* Adjust this if needed */
-    width: 60%;
-    margin: auto; /* Centers the card horizontally on the page */
+  font-size: 1.5rem;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  min-height: 100px;
+  width: 60%;
+  text-align: center;
 }
 
 #mode, #word-count {
-    text-align: center;
-    color: #333;
-    font-size: 0.9rem;
-    margin-top: 10px; /* Adjust spacing as needed */
+  text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 
 #controls {
@@ -94,32 +87,8 @@ button.active {
   gap: 10px;
 }
 
-
 footer p, #mode {
-    color: #333;
-    font-size: 0.9rem;
-    text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+  text-align: center;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
