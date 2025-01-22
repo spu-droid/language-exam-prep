@@ -1,6 +1,5 @@
-// Access the global variables from window object
-const controlButtons = window.controlButtons;
-const database = window.database;
+// Import the needed variables from app.js
+import { controlButtons, database } from './app.js';
 
 const learningAlgorithm = {
     mode: "View",
