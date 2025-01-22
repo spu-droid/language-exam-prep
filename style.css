@@ -41,7 +41,20 @@ button.active {
   color: #000; /* Change the text color if necessary for better visibility */
 }
 
-#prev, #next {
+#prev {
+    font-size: 1.5rem;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f4f4f4; /* Background for visibility */
+    border-radius: 50%; /* Makes buttons circular */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#next {
     font-size: 1.5rem;
     padding: 5px 10px;
     cursor: pointer;
