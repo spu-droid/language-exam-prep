@@ -138,31 +138,29 @@ editButton.addEventListener("click", () => {
 });
 
 deleteButton.addEventListener("click", () => {
-    console.log("Clicked delete the word");
-    if (confirm("Are you sure you want to delete this word?")) {
-        // Ensure that each word loaded into currentDeck has an 'id' that corresponds to its Firebase key
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const wordToDelete = currentDeck[currentIndex];
-        const keyToDelete = wordToDelete.id;  // Assumes 'id' is the Firebase key stored in each word object
+        const wordRef = ref(database, `words/${wordToDelete.id}`); // Ensure the 'id' matches the key in Firebase
 
-        // Firebase delete operation
-        remove(ref(database, `words/${keyToDelete}`))
-            .then(() => {
-                console.log("Delete successful");
-                // Remove the word from the currentDeck array
+        // Confirm deletion with the user
+        if (confirm("Are you sure you want to delete this word?")) {
+            remove(wordRef).then(() => {
+                console.log("Word deleted successfully!");
+
+                // Update local state: Remove the word from currentDeck
                 currentDeck.splice(currentIndex, 1);
-
-                // Adjust currentIndex if the last card was deleted or if it is now beyond the new array length
+                // Update currentIndex to avoid pointing to a non-existent entry
                 if (currentIndex >= currentDeck.length) {
-                    currentIndex = currentDeck.length - 1;  // Adjust to the new last element if needed
+                    currentIndex = currentDeck.length - 1; // Adjust if necessary
                 }
-
-                // Re-fetch the words to refresh the deck and display
-                fetchWords(document.querySelector(".deck-btn.active").getAttribute("data-deck"));
-                displayWord();  // Redisplay word to reflect the new state of currentDeck
-            })
-            .catch(error => {
-                console.error("Delete failed:", error);
+                // Update the display
+                displayWord();
+            }).catch(error => {
+                console.error("Failed to delete word:", error);
             });
+        }
+    } else {
+        console.log("No word to delete!");
     }
 });
 
