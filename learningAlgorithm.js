@@ -22,7 +22,7 @@ const learningAlgorithm = {
 
     },
 
-    toggleMode: function(showAlert) {
+    toggleMode: function() {
         console.log("Toggle mode called. Current mode:", this.mode);
 
         this.mode = (this.mode === "View") ? "Learn" : "View";
@@ -37,7 +37,6 @@ const learningAlgorithm = {
         this.controlButtons.forEach(button => button.disabled = this.mode === "View");
         modeDisplay2.textContent = `Card Mode: ${this.mode}`;
 
-        if (showAlert) alert(`Control buttons are now ${this.mode === "Learn" ? "ENABLED" : "DISABLED"}, < > buttons are ${this.mode === "Learn" ? "DISABLED" : "ENABLED"}.`);
     }
 };
 
