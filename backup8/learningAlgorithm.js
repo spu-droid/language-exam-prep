@@ -20,6 +20,11 @@ const learningAlgorithm = {
             console.error("Mode switch button not found.");
         }
 
+        this.controlButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                this.showNextCard();  // Directly show next card on any control button press
+            });
+        });
     },
 
     toggleMode: function(showAlert) {
