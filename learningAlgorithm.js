@@ -12,20 +12,23 @@ const learningAlgorithm = {
     },
 
     setupEventListeners: function() {
-        const modeSwitchButton = document.getElementById("mode-switch");
-        if (modeSwitchButton) {
-            modeSwitchButton.addEventListener("click", () => this.toggleMode(true)); // Pass true to show alerts
-            console.log("Event listener attached to mode-switch button.");
-        } else {
-            console.error("Mode switch button not found.");
-        }
+		const modeSwitchButton = document.getElementById("mode-switch");
+		if (modeSwitchButton) {
+			modeSwitchButton.addEventListener("click", () => this.toggleMode(true)); // Ensures alerts are shown only on user action
+			console.log("Event listener attached to mode-switch button.");
+		} else {
+			console.error("Mode switch button not found.");
+		}
 
-        this.controlButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                this.showNextCard();  // Directly show next card on any control button press
-            });
-        });
-    },
+		// Setup event listeners for control buttons to show next card
+		this.controlButtons.forEach(button => {
+			button.addEventListener("click", () => {
+				console.log("Control button clicked: " + button.getAttribute("data-difficulty"));
+				this.showNextCard();
+			});
+		});
+	},
+
 
     toggleMode: function(showAlert) {
         console.log("Toggle mode called. Current mode:", this.mode);
