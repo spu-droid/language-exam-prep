@@ -175,6 +175,7 @@ controlButtons.forEach(button => {
         } else if (button.getAttribute("data-difficulty") === "again") {
             console.log("Again button pressed");
             // Implement the action for "again"
+			
         } else if (button.getAttribute("data-difficulty") === "hard") {
             console.log("Hard button pressed");
             // Implement the action for "hard"
@@ -185,5 +186,8 @@ controlButtons.forEach(button => {
             console.log("Unknown difficulty button pressed");
             // Handle any other cases or ignore
         }
+		currentDeck.splice(currentIndex, 1);
+        if (currentIndex >= currentDeck.length) currentIndex = currentDeck.length - 1;
+        displayWord();
     });
 });
