@@ -252,50 +252,55 @@ function sendToQue(wordId, minutes) {
     if (wordIndex > -1) {
         let word = currentDeck[wordIndex];
         word.lock_date = "inPool"; // Set lock status to "inPool"
-        let placed = false;
 
+        // Find the first available spot in the countdown timers
+        let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
+                // If the word is currently in a different spot, clear that spot
+                if (countdown_timers[i] && countdown_timers[i].word.id === wordId) {
+                    countdown_timers[i] = null;
+                }
                 countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
-                console.log(`[${new Date().toLocaleTimeString()}] Word '${word.german}' placed in countdown_timers at position ${i}.`);
                 placed = true;
                 break;
             }
         }
+        // If no spot was available, push to the end
         if (!placed) {
             countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length - 1), milliseconds) });
-            console.log(`[${new Date().toLocaleTimeString()}] No available spot found. Word '${word.german}' pushed to end of countdown_timers.`);
         }
+        console.log("Current countdown_timers array:", countdown_timers.map(item => item ? item.word.german : null));
     } else {
         console.error("Word not found in current deck.");
     }
-    console.log("Current array countdown_timers[" + countdown_timers.map(item => item ? item.word.german : '').join(', ') + "]");
 }
 
 function finishCountdown(index) {
-    let entry = countdown_timers[index];
-    if (entry) {
-        let word = entry.word;
+    if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
+        let word = countdown_timers[index].word;
         countdown_timers[index] = null; // Free up the slot
-        let placed = false;
 
+        // Find the first available spot in the ready_array
+        let placed = false;
         for (let i = 0; i < ready_array.length; i++) {
             if (!ready_array[i]) {
-                ready_array[i] = word;
-                console.log(`[${new Date().toLocaleTimeString()}] Word '${word.german}' moved to ready_array at position ${i}.`);
+                ready_array[i] = word; // Place the word at the first available spot
                 placed = true;
                 break;
             }
         }
         if (!placed) {
-            ready_array.push(word);
-            console.log(`[${new Date().toLocaleTimeString()}] No available spot found in ready_array. Word '${word.german}' pushed to end of ready_array.`);
+            ready_array.push(word); // If no spot was found, push to the end of ready_array
         }
+
+        console.log(`Word ${word.id} with German: ${word.german} is now ready for review again.`);
+        console.log("Current ready_array after moving word:", ready_array.map(item => item ? item.german : null));
     } else {
-        console.error(`[${new Date().toLocaleTimeString()}] Invalid index or no timer found at this index: ${index}`);
+        console.error("Invalid index or no timer found at this index:", index);
     }
-    console.log("Current array ready_array[" + ready_array.map(word => word ? word.german : '').join(', ') + "]");
 }
+
 
 function displayArrays() {
     console.log("Current countdown_timers: [" + countdown_timers.map(item => item && item.word ? item.word.german : ' ').join(', ') + "]");
