@@ -4,9 +4,6 @@ import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gst
 
 
 
-// Now you can use learningAlgorithm in this module
-learningAlgorithm.initialize();
-
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
@@ -52,6 +49,8 @@ deckButtons.forEach(button => {
         fetchWords(this.getAttribute("data-deck"));
     });
 });
+
+
 
 
 function runLearningAlgorithm() {
