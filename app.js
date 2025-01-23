@@ -246,7 +246,6 @@ controlButtons.forEach(button => {
     });
 });
 
-
 function sendToQueue(wordId, minutes) {
     const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
     const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
@@ -256,43 +255,42 @@ function sendToQueue(wordId, minutes) {
         return;
     }
 
-    // Define a timer action
-    const timerAction = () => {
-        // Append to the end of ready_array when the timer completes
-        ready_array.push(word);
-        console.log(`'${word.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
-
-        // Remove the word from the countdown array if it exists there
-        const index = countdown_timers.findIndex(item => item.word.id === wordId);
-        if (index !== -1) {
-            countdown_timers.splice(index, 1); // Remove the item from the countdown array
-            console.log(`'${word.german}' removed from countdown_timers.`);
-        }
-
-        // Optionally, display the arrays for debugging
-        console.log("Updated ready_array:", ready_array.map(word => word.german));
-        console.log("Updated countdown_timers:", countdown_timers.map(item => item.word.german));
+    // Function to handle the transfer to the ready_array
+    const moveToReadyArray = (index) => {
+        clearTimeout(countdown_timers[index].timer); // Cancel the existing timer
+        countdown_timers[index] = null; // Clear the slot
+        ready_array.push(word); // Append to the ready_array
+        console.log(`'${word.german}' has completed its countdown and moved to the ready_array at ${new Date().toLocaleTimeString()}.`);
+        console.log("Updated ready_array:", ready_array.map(w => w.german));
     };
 
-    if (milliseconds === 0) {
-        // If the timing is immediate, prepend to the ready_array
-        ready_array.unshift(word);
-        console.log(`'${word.german}' is due immediately. Prepending to ready_array.`);
-        timerAction(); // Execute the action immediately without setting a timeout
-    } else {
-        // Schedule the word with a timer
-        const timer = setTimeout(timerAction, milliseconds);
-        // Store the timer and word in the countdown array
-        countdown_timers.push({ word, timer });
-        console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(Date.now() + milliseconds).toLocaleTimeString()}.`);
+    // Try to find an empty spot in the countdown_timers array
+    let placed = false;
+    for (let i = 0; i < countdown_timers.length; i++) {
+        if (!countdown_timers[i]) {
+            countdown_timers[i] = { word, timer: setTimeout(() => moveToReadyArray(i), milliseconds) };
+            console.log(`Placed '${word.german}' in an empty slot at index ${i} at ${new Date().toLocaleTimeString()}.`);
+            placed = true;
+            break;
+        }
     }
 
-    // Optionally, display the initial state of arrays for debugging
-    console.log("Initial ready_array:", ready_array.map(word => word.german));
-    console.log("Initial countdown_timers:", countdown_timers.map(item => item.word.german));
+    // If no empty slot is found, push to the end of the array
+    if (!placed) {
+        countdown_timers.push({
+            word,
+            timer: setTimeout(() => moveToReadyArray(countdown_timers.length), milliseconds)
+        });
+        console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
+    }
+
+    // Display the current state of countdown_timers for debugging
+    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
 }
 
+// This function just prints the current state of arrays for debugging
 function displayArrays() {
+    console.log("Current countdown_timers: [" + countdown_timers.map(item => item && item.word ? item.word.german : 'Empty').join(', ') + "]");
     console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
 }
 
