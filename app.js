@@ -37,6 +37,8 @@ let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;  // Language mode default
 let viewMode = "View";  // Learning mode default
+let countdown_timers = [];
+let ready_array = [];
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -213,31 +215,71 @@ showAnswerButton.addEventListener("click", () => {
 
 controlButtons.forEach(button => {
     button.addEventListener("click", () => {
-        console.log("Control button clicked:", button.getAttribute("data-difficulty"));
-        if (button.getAttribute("data-difficulty") === "easy") {
+        const difficulty = button.getAttribute("data-difficulty");
+        console.log("Control button clicked:", difficulty);
+        const word = currentDeck[currentIndex];
+        const wordId = word.id;
+
+        if (difficulty === "easy") {
             console.log("Easy button pressed");
-            // Implement your Anki-like algorithm here for "easy"
-			const today = new Date().toLocaleDateString('en-GB');
-			const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
-            update(wordRef, { lock_date: today })
+            const today = new Date().toLocaleDateString('en-GB');
+            update(ref(database, `words/${wordId}`), { lock_date: today })
                 .then(() => console.log("Lock date set to today:", today))
                 .catch(error => console.error("Failed to set lock date:", error));
-        } else if (button.getAttribute("data-difficulty") === "again") {
+        } else if (difficulty === "again") {
             console.log("Again button pressed");
-            // Implement the action for "again"
-			
-        } else if (button.getAttribute("data-difficulty") === "hard") {
+            sendToQue(wordId, 1); // 1 minute
+        } else if (difficulty === "hard") {
             console.log("Hard button pressed");
-            // Implement the action for "hard"
-        } else if (button.getAttribute("data-difficulty") === "good") {
+            sendToQue(wordId, 6); // 6 minutes
+        } else if (difficulty === "good") {
             console.log("Good button pressed");
-            // Implement the action for "good"
-        } else {
-            console.log("Unknown difficulty button pressed");
-            // Handle any other cases or ignore
+            sendToQue(wordId, 10); // 10 minutes
         }
-		currentDeck.splice(currentIndex, 1);
-        if (currentIndex >= currentDeck.length) currentIndex = currentDeck.length - 1;
+
+        // Move to next word or wrap around
+        currentIndex = (currentIndex + 1) % currentDeck.length;
         displayWord();
     });
 });
+
+function sendToQue(wordId, minutes) {
+    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
+    const wordIndex = currentDeck.findIndex(word => word.id === wordId);
+
+    if (wordIndex > -1) {
+        let word = currentDeck[wordIndex];
+        word.lock_date = "inPool"; // Set lock status to "inPool"
+
+        // Find the first available spot in the countdown timers
+        let placed = false;
+        for (let i = 0; i < countdown_timers.length; i++) {
+            if (!countdown_timers[i]) {
+                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
+                placed = true;
+                break;
+            }
+        }
+        // If no spot was available, push to the end
+        if (!placed) {
+            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length), milliseconds) });
+        }
+    } else {
+        console.error("Word not found in current deck.");
+    }
+}
+
+function finishCountdown(index) {
+    let word = countdown_timers[index].word;
+    countdown_timers[index] = null; // Free up the slot
+    ready_array.push(word); // Add to ready_array
+    console.log(`Word ${word.id} is now ready for review again.`);
+}
+
+function retrieveFromReadyArray() {
+    if (ready_array.length > 0) {
+        let word = ready_array.shift(); // Take the first word
+        return word;
+    }
+    return null; // No words are ready
+}
