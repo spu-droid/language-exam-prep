@@ -41,7 +41,6 @@ let countdown_timers = [];
 let ready_array = [];
 let totalWordsInDeck = 0;
 let learnedWordsCount = 0;
-let leftWords = 0;
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -83,11 +82,6 @@ function updateWordsToLearn() {
 	
 }
 
-function updateLeftWords() {
-	const leftWords = (wordsToLearnCount - learnedWordsCount)
-	document.getElementById("words-to-learn").textContent = `Words to learn2: ${leftWords}`;          //here
-}
-
 
 function displayWord() {
     if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
@@ -106,7 +100,6 @@ function displayWord() {
                 modeDisplay.textContent = "";
                 updateWordsLearned(); // Update learned count even when no words are available
 				updateWordsToLearn();
-				updateLeftWords();
             }
         } else {
             // Display the word if not locked or in View mode
@@ -115,7 +108,6 @@ function displayWord() {
             modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
             updateWordsLearned(); // Always update the learned words count on word display
 			updateWordsToLearn();
-			updateLeftWords();
         }
     } else {
         // Handle case when there are no words in the deck
@@ -124,7 +116,6 @@ function displayWord() {
         modeDisplay.textContent = "";
         updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
 		updateWordsToLearn();
-		updateLeftWords();
     }
 }
 
@@ -239,10 +230,8 @@ controlButtons.forEach(button => {
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
 				learnedWordsCount++;
-				leftWords--;
 				updateWordsLearned();
                 updateWordsToLearn();
-				updateLeftWords();
 				displayWord();
             } else if (difficulty === "again") {
                 console.log("Again button pressed");
