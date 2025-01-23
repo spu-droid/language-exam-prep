@@ -245,64 +245,46 @@ controlButtons.forEach(button => {
     });
 });
 
-function sendToQue(wordId, minutes) {
+function sendToQueue(wordId, minutes) {
     const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
-    const wordIndex = currentDeck.findIndex(word => word.id === wordId);
+    const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
 
-    if (wordIndex > -1) {
-        let word = currentDeck[wordIndex];
-        word.lock_date = "inPool"; // Set lock status to "inPool"
-
-        // Find the first available spot in the countdown timers
+    if (word) {
+        // Attempt to place the word in the first available null spot
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
-                // If the word is currently in a different spot, clear that spot
-                if (countdown_timers[i] && countdown_timers[i].word.id === wordId) {
-                    countdown_timers[i] = null;
-                }
-                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
+                countdown_timers[i] = { word, timer: setTimeout(() => moveToReadyArray(i), milliseconds) };
                 placed = true;
+                console.log(`Placed '${word.german}' in countdown_timers at index ${i} at ${new Date().toLocaleTimeString()}.`);
                 break;
             }
         }
-        // If no spot was available, push to the end
+
+        // If no spot was found, push to the end
         if (!placed) {
-            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length - 1), milliseconds) });
+            countdown_timers.push({
+                word,
+                timer: setTimeout(() => moveToReadyArray(countdown_timers.length - 1), milliseconds)
+            });
+            console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
         }
-        console.log("Current countdown_timers array:", countdown_timers.map(item => item ? item.word.german : null));
     } else {
         console.error("Word not found in current deck.");
     }
+
+    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
 }
 
-function finishCountdown(index) {
+function moveToReadyArray(index) {
     if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
         let word = countdown_timers[index].word;
-        countdown_timers[index] = null; // Free up the slot
+        ready_array.unshift(word); // Add the word to the beginning of the ready_array
+        countdown_timers[index] = null; // Clear the timer slot
 
-        // Find the first available spot in the ready_array
-        let placed = false;
-        for (let i = 0; i < ready_array.length; i++) {
-            if (!ready_array[i]) {
-                ready_array[i] = word; // Place the word at the first available spot
-                placed = true;
-                break;
-            }
-        }
-        if (!placed) {
-            ready_array.push(word); // If no spot was found, push to the end of ready_array
-        }
-
-        console.log(`Word ${word.id} with German: ${word.german} is now ready for review again.`);
-        console.log("Current ready_array after moving word:", ready_array.map(item => item ? item.german : null));
+        console.log(`Word '${word.german}' is now ready for review. Moved to ready_array at ${new Date().toLocaleTimeString()}.`);
+        console.log("Updated ready_array:", ready_array.map(item => item.german));
     } else {
         console.error("Invalid index or no timer found at this index:", index);
     }
-}
-
-
-function displayArrays() {
-    console.log("Current countdown_timers: [" + countdown_timers.map(item => item && item.word ? item.word.german : ' ').join(', ') + "]");
-    console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : ' ').join(', ') + "]");
 }
