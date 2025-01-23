@@ -86,67 +86,55 @@ function updateWordsToLearn() {
 
 
 function displayWord() {
+    let word;
+
+    // Check for words in ready_array first
+    if (ready_array.length > 0) {
+        word = ready_array.pop();
+        if (!word) {
+            console.error("Empty or invalid word popped from ready_array");
+            return; // Exit function if no valid word to display
+        }
+        // Update the display with the word from ready_array
+        updateDisplay(word);
+        return; // Exit function after displaying the ready word
+    }
+
+    // Handle normal flow from currentDeck
     if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
+        word = currentDeck[currentIndex];
         const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const word = currentDeck[currentIndex];
 
-        // Check if we're in Learn mode and the word is locked for today
-        if (viewMode === "Learn" && word.lock_date === today && ready_array.length == 0) {
-            currentIndex++; // Move to the next word
+        if (viewMode === "Learn" && word.lock_date === today) {
+            currentIndex++; // Skip locked word
             if (currentIndex < currentDeck.length) {
-                displayWord(); // Recursively call to find an available word
+                displayWord(); // Recursive call to find an unlocked word
             } else {
-                // No more words available, handle this case
                 card.innerHTML = "No available words to review today. Please come back tomorrow.";
-                wordCount.textContent = "Words in total5: " + currentDeck.length;
-                modeDisplay.textContent = "";
-                updateWordsLearned(); // Update learned count even when no words are available
-				updateWordsToLearn();
+                resetDisplay();
             }
-		} else if  (viewMode === "Learn" && ready_array.length > 0){
-			
-			word.id, word.german, word.italian = ready_array.pop(); // Removes the last element and returns it
-			const wordId = word.id; // Replace 'yourSpecificWordId' with the actual ID you have
-
-			// Finding the index of the word in the currentDeck
-			wordIndex = currentDeck.findIndex(word => word.id === wordId);
-
-			if (wordIndex !== -1) {
-				// Convert zero-based index to one-based index
-				const wordPosition = wordIndex + 1;
-				console.log(`The word is at position ${wordPosition} in the deck.`);
-				console.log(`Total number of words in the deck: ${currentDeck.length}`);
-				currentIndex = wordPosition;
-			} else {
-				console.log("The word with the specified ID was not found in the current deck.");
-			}
-			
-			
-			wordIndex = currentDeck.findIndex(word => word.id === wordId);
-			console.log("Removed and retrieved word:", word.german); // Assuming the word object has a 'german' property
-			// Display the word that is in repetition
-            card.innerHTML = isGermanFirst ? word.german : word.italian;
-            wordCount.textContent = `Words in total: ${currentDeck.length}`;
-            modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
-            updateWordsLearned(); // Always update the learned words count on word display
-			updateWordsToLearn();
-			
         } else {
-            // Display the word if not locked or in View mode
-            card.innerHTML = isGermanFirst ? word.german : word.italian;
-            wordCount.textContent = `Words in total3: ${currentDeck.length}`;
-            modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
-            updateWordsLearned(); // Always update the learned words count on word display
-			updateWordsToLearn();
+            updateDisplay(word); // Display the current word
         }
     } else {
-        // Handle case when there are no words in the deck
         card.innerHTML = "No words in this deck! Please select another.";
-        wordCount.textContent = "Words in total9: 0";
-        modeDisplay.textContent = "";
-        updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
-		updateWordsToLearn();
+        resetDisplay();
     }
+}
+
+function updateDisplay(word) {
+    card.innerHTML = isGermanFirst ? word.german : word.italian;
+    wordCount.textContent = `Words in total: ${currentDeck.length}`;
+    modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
+    updateWordsLearned();
+    updateWordsToLearn();
+}
+
+function resetDisplay() {
+    wordCount.textContent = "Words in total: 0";
+    modeDisplay.textContent = "";
+    updateWordsLearned(); // Reset learned count when no words are in the deck
+    updateWordsToLearn();
 }
 
 // Toggle language mode
