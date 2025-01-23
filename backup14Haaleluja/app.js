@@ -256,43 +256,34 @@ function sendToQueue(wordId, minutes) {
         return;
     }
 
-    // Define a timer action
-    const timerAction = () => {
-        // Append to the end of ready_array when the timer completes
-        ready_array.push(word);
-        console.log(`'${word.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
-
-        // Remove the word from the countdown array if it exists there
-        const index = countdown_timers.findIndex(item => item.word.id === wordId);
-        if (index !== -1) {
-            countdown_timers.splice(index, 1); // Remove the item from the countdown array
-            console.log(`'${word.german}' removed from countdown_timers.`);
-        }
-
-        // Optionally, display the arrays for debugging
-        console.log("Updated ready_array:", ready_array.map(word => word.german));
-        console.log("Updated countdown_timers:", countdown_timers.map(item => item.word.german));
-    };
-
     if (milliseconds === 0) {
         // If the timing is immediate, prepend to the ready_array
         ready_array.unshift(word);
         console.log(`'${word.german}' is due immediately. Prepending to ready_array.`);
-        timerAction(); // Execute the action immediately without setting a timeout
     } else {
         // Schedule the word with a timer
-        const timer = setTimeout(timerAction, milliseconds);
-        // Store the timer and word in the countdown array
-        countdown_timers.push({ word, timer });
+        const timer = setTimeout(() => {
+            // Move the first word in the countdown queue to the ready_array
+            const scheduledWord = countdown_queue.shift();
+            ready_array.push(scheduledWord);
+            console.log(`'${scheduledWord.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
+        }, milliseconds);
+
+        // Add the word to the countdown queue to maintain the order
+        countdown_queue.push(word);
         console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(Date.now() + milliseconds).toLocaleTimeString()}.`);
     }
 
-    // Optionally, display the initial state of arrays for debugging
-    console.log("Initial ready_array:", ready_array.map(word => word.german));
-    console.log("Initial countdown_timers:", countdown_timers.map(item => item.word.german));
+    // Optionally, display the arrays for debugging
+    console.log("Current countdown_queue:", countdown_queue.map(word => word.german));
+    console.log("Current ready_array:", ready_array.map(word => word.german));
 }
 
 function displayArrays() {
+    console.log("Current countdown_queue: [" + countdown_queue.map(word => word ? word.german : 'Empty').join(', ') + "]");
     console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
 }
+
+
+
 
