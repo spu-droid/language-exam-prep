@@ -1,11 +1,11 @@
-import { controlButtons } from './app.js';
+import { ref, onValue, update } from 'firebase/database';
+import { database } from './firebaseConfig';  // Make sure to import your Firebase config correctly
 
 export const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
     deckData: [],
     currentIndex: 0,
-    countdownTimers: [],
     resetTimersDaily: [],
 
     initialize: function() {
@@ -14,58 +14,65 @@ export const learningAlgorithm = {
     },
 
     setupEventListeners: function() {
-        const modeSwitchButton = document.getElementById("mode-switch");
-        if (modeSwitchButton) {
-            modeSwitchButton.addEventListener("click", () => this.toggleMode(true));
+        this.controlButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const difficulty = button.getAttribute("data-difficulty");
+                this.handleDifficulty(difficulty);
+            });
+        });
+    },
+
+    toggleMode: function(alertToggle) {
+        this.mode = (this.mode === "View") ? "Learn" : "View";
+        document.getElementById("mode-display").textContent = `Mode: ${this.mode}`;
+        this.updateButtonStates();
+        if (alertToggle) alert(`Switched to ${this.mode} mode.`);
+    },
+
+    updateButtonStates: function() {
+        const isView = this.mode === "View";
+        document.getElementById("prev").disabled = isView;
+        document.getElementById("next").disabled = isView;
+        this.controlButtons.forEach(button => button.disabled = isView);
+    },
+
+    handleDifficulty: function(difficulty) {
+        const word = this.deckData[this.currentIndex];
+        const today = new Date().toLocaleDateString('en-GB');
+        if (difficulty === "easy") {
+            update(ref(database, `words/${word.id}`), { lock_date: today });
+            this.moveToNextAvailableWord();
         } else {
-            console.error("Mode switch button not found.");
+            this.moveToNextAvailableWord();
         }
     },
 
-    toggleMode: function() {
-        this.mode = (this.mode === "View") ? "Learn" : "View";
-        const prevButton = document.getElementById("prev");
-        const nextButton = document.getElementById("next");
-        const modeDisplay2 = document.getElementById("mode2");
+    moveToNextAvailableWord: function() {
+        this.currentIndex++;
+        this.nextAvailableWord();
+    },
 
-        prevButton.disabled = this.mode !== "View";
-        nextButton.disabled = this.mode !== "View";
-        this.controlButtons.forEach(button => button.disabled = this.mode === "View");
-        modeDisplay2.textContent = `Card Mode: ${this.mode}`;
+    nextAvailableWord: function() {
+        const today = new Date().toLocaleDateString('en-GB');
+        while (this.currentIndex < this.deckData.length && this.deckData[this.currentIndex].lock_date === today) {
+            this.currentIndex++;
+        }
+        if (this.currentIndex < this.deckData.length) {
+            this.displayWord2();
+        } else {
+            console.log("No available words to review today. Please come back tomorrow.");
+        }
+    },
+
+    displayWord2: function() {
+        const word = this.deckData[this.currentIndex];
+        document.getElementById("card").textContent = word.german;
+        document.getElementById("word-count").textContent = `Words in total: ${this.deckData.length}`;
     }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    learningFlashcards("defaultDeck"); // Initialize with a default or selected deck
+    learningAlgorithm.initialize();
 });
 
-
-function learningFlashcards(deck) {
-    const wordsRef = ref(database, 'words');
-    onValue(wordsRef, snapshot => {
-        const data = snapshot.val();
-        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
-        currentIndex = 0;
-        nextAvailableWord();
-    }, {
-        onlyOnce: true
-    });
-}
-
-function nextAvailableWord() {
-    const today = new Date().toLocaleDateString('en-GB');
-    while (currentIndex < currentDeck.length) {
-        if (currentDeck[currentIndex].lock_date !== today) {
-            displayWord();
-            break;
-        }
-        currentIndex++;
-    }
-
-    if (currentIndex >= currentDeck.length) {
-        card.innerHTML = "No available words to review today. Please come back tomorrow.";
-        wordCount.textContent = "Words in total: " + currentDeck.length;
-        modeDisplay.textContent = "";
-    }
-}
-
+// Note: Make sure you have correct paths and config imports for Firebase
