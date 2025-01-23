@@ -246,56 +246,44 @@ controlButtons.forEach(button => {
 });
 
 
-
 function sendToQueue(wordId, minutes) {
-    const milliseconds = minutes * 60 * 1000;
-    const word = currentDeck.find(word => word.id === wordId);
+    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
+    const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
 
     if (word) {
-        let placed = false;
-        for (let i = 0; i < countdown_timers.length; i++) {
-            if (!countdown_timers[i]) {
-                countdown_timers[i] = {
-                    word,
-                    timer: setTimeout(() => moveToReadyArray(i, new Date().getTime()), milliseconds),
-                    addedTime: new Date().getTime() // Record when the word was added
-                };
-                placed = true;
-                console.log(`Placed '${word.german}' in countdown_timers at index ${i} at ${new Date().toLocaleTimeString()}.`);
-                break;
-            }
-        }
+        // Prepare the word object with its intended timer end time
+        const endTime = new Date().getTime() + milliseconds;
+        const timerObject = { word, endTime };
 
-        if (!placed) {
-            countdown_timers.push({
-                word,
-                timer: setTimeout(() => moveToReadyArray(countdown_timers.length - 1, new Date().getTime()), milliseconds),
-                addedTime: new Date().getTime() // Record when the word was added
-            });
-            console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
-        }
+        // Push directly to the countdown queue
+        countdown_timers.push(timerObject);
+        countdown_timers.sort((a, b) => a.endTime - b.endTime); // Ensure the queue is ordered by endTime
+
+        console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(endTime).toLocaleTimeString()}.`);
     } else {
         console.error("Word not found in current deck.");
     }
 
-    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
+    // Optionally, display the queue for debugging
+    console.log("Current countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
 }
 
-function moveToReadyArray(index, moveTime) {
-    if (index >= 0 && index < countdown_timers.length && countdown_timers[index] && countdown_timers[index].timer) {
-        let word = countdown_timers[index].word;
-        clearTimeout(countdown_timers[index].timer);
-        countdown_timers[index] = null;
-
-        ready_array.push({ word, moveTime }); // Push with time to sort later
-        ready_array.sort((a, b) => a.moveTime - b.moveTime); // Sort based on the time they were added
-
-        console.log(`Word '${word.german}' is now ready for review. Moved to ready_array at ${new Date().toLocaleTimeString()}.`);
-        console.log("Updated ready_array:", ready_array.map(item => item.word.german));
-    } else {
-        console.error("Invalid index or no timer found at this index:", index);
+function processTimers() {
+    const now = new Date().getTime();
+    // Move all words whose timer has expired to the ready_array
+    while (countdown_timers.length > 0 && countdown_timers[0].endTime <= now) {
+        let item = countdown_timers.shift(); // Remove from the front of the queue
+        ready_array.push(item.word); // Add to the ready_array
+        console.log(`Moved '${item.word.german}' to ready_array at ${new Date().toLocaleTimeString()}.`);
     }
+
+    // Display the updated arrays
+    console.log("Updated countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
+    console.log("Updated ready_array:", ready_array.map(word => word.german));
 }
+
+// Example function call to simulate processing at intervals or triggered by a user action
+// setInterval(processTimers, 1000); // This could be a setInterval if you want to process periodically
 
 
 
