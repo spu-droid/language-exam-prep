@@ -91,24 +91,31 @@ function displayWord() {
 
         // Check if we're in Learn mode and the word is locked for today
         if (viewMode === "Learn" && word.lock_date === today) {
-            currentIndex++; // Move to the next word
-            if (currentIndex < currentDeck.length) {
-                displayWord(); // Recursively call to find an available word
+            if (ready_array.length > 0) {
+                // If there are words ready to learn, display the last one from ready_array
+                const wordToShow = ready_array.pop(); // Remove the last word and use it
+                card.innerHTML = isGermanFirst ? wordToShow.german : wordToShow.italian;
+                console.log("Displayed a word from ready_array due to lock on current word.");
             } else {
-                // No more words available, handle this case
-                card.innerHTML = "No available words to review today. Please come back tomorrow.";
-                wordCount.textContent = "Words in total5: " + currentDeck.length;
-                modeDisplay.textContent = "";
-                updateWordsLearned(); // Update learned count even when no words are available
-				updateWordsToLearn();
+                currentIndex++; // Move to the next word
+                if (currentIndex < currentDeck.length) {
+                    displayWord(); // Recursively call to find an available word
+                } else {
+                    // No more words available, handle this case
+                    card.innerHTML = "No available words to review today. Please come back tomorrow.";
+                    wordCount.textContent = "Words in total5: " + currentDeck.length;
+                    modeDisplay.textContent = "";
+                }
             }
+            updateWordsLearned(); // Update learned count even when no words are available
+            updateWordsToLearn();
         } else {
             // Display the word if not locked or in View mode
             card.innerHTML = isGermanFirst ? word.german : word.italian;
             wordCount.textContent = `Words in total3: ${currentDeck.length}`;
             modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
             updateWordsLearned(); // Always update the learned words count on word display
-			updateWordsToLearn();
+            updateWordsToLearn();
         }
     } else {
         // Handle case when there are no words in the deck
@@ -116,7 +123,7 @@ function displayWord() {
         wordCount.textContent = "Words in total9: 0";
         modeDisplay.textContent = "";
         updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
-		updateWordsToLearn();
+        updateWordsToLearn();
     }
 }
 
