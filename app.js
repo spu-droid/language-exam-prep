@@ -41,6 +41,7 @@ let countdown_timers = [];
 let ready_array = [];
 let totalWordsInDeck = 0;
 let learnedWordsCount = 0;
+let countdown_queue = [];
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
