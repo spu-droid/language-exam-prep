@@ -116,10 +116,11 @@ function displayWord() {
 				const wordPosition = wordIndex + 1;
 				console.log(`The word is at position ${wordPosition} in the deck.`);
 				console.log(`Total number of words in the deck: ${currentDeck.length}`);
+				currentIndex = wordPosition;
 			} else {
 				console.log("The word with the specified ID was not found in the current deck.");
 			}
-			currentIndex = wordPosition;
+			
 			
 			wordIndex = currentDeck.findIndex(word => word.id === wordId);
 			console.log("Removed and retrieved word:", word.german); // Assuming the word object has a 'german' property
