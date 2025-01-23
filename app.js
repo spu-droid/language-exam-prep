@@ -39,6 +39,8 @@ let isGermanFirst = true;  // Language mode default
 let viewMode = "View";  // Learning mode default
 let countdown_timers = [];
 let ready_array = [];
+let totalWordsInDeck = 0;
+let learnedWordsCount = 0;
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -55,9 +57,14 @@ function fetchWords(deck) {
         currentDeck = Object.entries(data)
             .filter(([key, word]) => word.category && word.category.includes(deck))
             .map(([key, word]) => ({...word, id: key}));
+			
+		// Initialize word counts
+        totalWordsInDeck = currentDeck.length;
+        learnedWordsCount = currentDeck.filter(word => word.lock_date === new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })).length;
 
         // After fetching and filtering the words, calculate words learned today
         updateWordsLearned();
+		updateWordsToLearn();
 
         currentIndex = 0; // Start from the first word
         displayWord(); // Display the first or next available word
@@ -65,16 +72,12 @@ function fetchWords(deck) {
 }
 
 function updateWordsLearned() {
-    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-    document.getElementById("words-learned").textContent = `Words learned1: ${learnedCount}`;             //here
-	
+    document.getElementById("words-learned").textContent = `Words learned: ${learnedWordsCount}`;
 }
+	
 
 function updateWordsToLearn() {
-    const wordsToLearnCount = currentDeck.length;
-    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearnCount}`;          //here
-	
+    doument.getElementById("word-count").textContent = `Words to learn: ${totalWordsInDeck - learnedWordsCount}`;
 }
 
 function displayWord() {
@@ -223,6 +226,7 @@ controlButtons.forEach(button => {
                         console.log("Lock date set to today:", today)
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
+				learnedWordsCount = (learnedWordsCount + 1)
 				updateWordsLearned();
                 updateWordsToLearn();
 				displayWord();
