@@ -1,49 +1,47 @@
-// Assume the file is using ES modules
-import { controlButtons } from './app.js';
-
-export const learningAlgorithm = {
+const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
     deckData: [],
     currentIndex: 0,
-    countdownTimers: [],
-    resetTimersDaily: [],
+    countdownTimers: [],  // This will also track daily visibility blocks
+    resetTimersDaily: [], // Tracks cards to be reset daily
 
     initialize: function() {
         this.setupEventListeners();
-        this.toggleMode(false);
+        this.toggleMode(false); // Initialize without alert
     },
 
     setupEventListeners: function() {
         const modeSwitchButton = document.getElementById("mode-switch");
         if (modeSwitchButton) {
-            modeSwitchButton.addEventListener("click", () => this.toggleMode(true));
+            modeSwitchButton.addEventListener("click", () => this.toggleMode(true)); // Pass true to show alerts
+            console.log("Event listener attached to mode-switch button.");
         } else {
             console.error("Mode switch button not found.");
         }
+
     },
 
-    toggleMode: function(alertToggle) {
+    toggleMode: function() {
+        console.log("Toggle mode called. Current mode:", this.mode);
+
         this.mode = (this.mode === "View") ? "Learn" : "View";
-        const modeDisplay = document.getElementById("mode-display");
-        if (modeDisplay) {
-            modeDisplay.textContent = `Mode: ${this.mode}`;
-            if (alertToggle) alert(`Switched to ${this.mode} mode.`);
-        }
+        console.log("New mode after toggle:", this.mode);
+
         const prevButton = document.getElementById("prev");
         const nextButton = document.getElementById("next");
+        const modeDisplay2 = document.getElementById("mode2");
 
-        if(prevButton && nextButton) {
-            prevButton.disabled = this.mode !== "View";
-            nextButton.disabled = this.mode !== "View";
-            this.controlButtons.forEach(button => button.disabled = this.mode === "View");
-        } else {
-            console.error("Navigation buttons not found.");
-        }
+        prevButton.disabled = this.mode !== "View";
+        nextButton.disabled = this.mode !== "View";
+        this.controlButtons.forEach(button => button.disabled = this.mode === "View");
+        modeDisplay2.textContent = `Card Mode: ${this.mode}`;
+
     }
 };
 
-// Ensure the DOM is fully loaded before running script
+// DOMContentLoaded listener at the end of the file
 document.addEventListener("DOMContentLoaded", () => {
-    learningAlgorithm.initialize(); // Initialize the algorithm
+    learningAlgorithm.initialize();
+    console.log("Learning algorithm initialized and ready.");
 });
