@@ -1,5 +1,5 @@
-// Import the needed variables from app.js
-import { controlButtons, database } from './app.js';
+// Correct import
+import { controlButtons } from './app.js';
 
 const learningAlgorithm = {
     mode: "View",
