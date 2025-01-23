@@ -29,51 +29,35 @@ const addButton = document.getElementById("add");
 const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
+const modeSwitchButton = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
 
 let currentDeck = [];
 let currentIndex = 0;
-let isGermanFirst = true;
-let mode = "View"; // Default mode
+let isGermanFirst = true;  // Language mode default
+let viewMode = "View";  // Learning mode default
 
-// Handling deck button interactions
-deckButtons.forEach(button => {
-    button.addEventListener("click", function() {
-        deckButtons.forEach(btn => btn.classList.remove("active"));
-        this.classList.add("active");
-        fetchWords(this.getAttribute("data-deck"));
-    });
-});
+// Event Listeners
+deckButtons.forEach(button => button.addEventListener("click", function() {
+    deckButtons.forEach(btn => btn.classList.remove("active"));
+    this.classList.add("active");
+    fetchWords(this.getAttribute("data-deck"));
+}));
 
-// Update UI based on mode
-function updateUIForMode() {
-    modeDisplay.textContent = `Mode: ${mode}`;
-    // Additional UI updates can be handled here based on the mode
-}
-
-// Setup the event listener for the mode switch button
-mode2.addEventListener("click", () => {
-    mode2 = mode2 === "View" ? "Learn" : "View";
-    updateUIForMode();
-});
-
-// Initial UI update on load
-updateUIForMode();
-
+// Fetch words for the selected deck
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
         currentDeck = Object.entries(data)
-            .filter(([key, word]) => word.category && word.category.includes(deck))
-            .map(([key, word]) => ({ ...word, id: key }));
+            .filter(([key, word]) => word.category.includes(deck))
+            .map(([key, word]) => ({...word, id: key}));
         currentIndex = 0;
         displayWord();
-    }, {
-        onlyOnce: true
-    });
+    }, {onlyOnce: true});
 }
 
+// Display the current word
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
@@ -87,7 +71,19 @@ function displayWord() {
     }
 }
 
-// Navigating through cards
+// Toggle language mode
+switchButton.addEventListener("click", () => {
+    isGermanFirst = !isGermanFirst;
+    displayWord();
+});
+
+// Toggle learning mode
+modeSwitchButton.addEventListener("click", () => {
+    viewMode = viewMode === "View" ? "Learn" : "View";
+    modeDisplay2.textContent = `Learning Mode: ${viewMode}`;
+});
+
+// Navigation through cards
 nextButton.addEventListener("click", () => {
     if (currentIndex < currentDeck.length - 1) {
         currentIndex++;
@@ -106,29 +102,25 @@ prevButton.addEventListener("click", () => {
     }
 });
 
-// Managing CRUD operations for flashcards
+// CRUD operations for cards
 addButton.addEventListener("click", () => {
     const italian = prompt("Enter Italian word:");
     const german = prompt("Enter German word:");
-    const newWord = {
-        italian: italian,
-        german: german,
-        category: document.querySelector(".deck-btn.active").getAttribute("data-deck") + ";All Words"
-    };
-    push(ref(database, 'words'), newWord);
+    if (italian && german) {
+        const newWord = { italian, german, category: document.querySelector(".deck-btn.active").getAttribute("data-deck") + ";All Words" };
+        push(ref(database, 'words'), newWord);
+    }
 });
 
 editButton.addEventListener("click", () => {
-    const italian = prompt("Update Italian word:", currentDeck[currentIndex].italian);
-    const german = prompt("Update German word:", currentDeck[currentIndex].german);
-    const updatedWord = {
-        italian: italian,
-        german: german,
-        category: currentDeck[currentIndex].category
-    };
-    const updates = {};
-    updates['/words/' + Object.keys(currentDeck)[currentIndex]] = updatedWord;
-    update(ref(database), updates);
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        const updatedItalian = prompt("Update Italian word:", word.italian);
+        const updatedGerman = prompt("Update German word:", word.german);
+        const updates = {};
+        updates[`/words/${word.id}`] = { ...word, italian: updatedItalian, german: updatedGerman };
+        update(ref(database), updates);
+    }
 });
 
 deleteButton.addEventListener("click", () => {
@@ -136,29 +128,18 @@ deleteButton.addEventListener("click", () => {
         if (confirm("Are you sure you want to delete this word?")) {
             const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
             remove(wordRef).then(() => {
-                console.log("Word deleted successfully.");
                 currentDeck.splice(currentIndex, 1);
-                if (currentIndex >= currentDeck.length) {
-                    currentIndex = currentDeck.length - 1; // Adjust index if needed
-                }
+                if (currentIndex >= currentDeck.length) currentIndex = currentDeck.length - 1;
                 displayWord();
-            }).catch(error => {
-                console.error("Failed to delete word:", error);
             });
         }
-    } else {
-        console.log("No word selected or deck is empty.");
     }
 });
 
-// Showing the answer
+// Showing answer
 showAnswerButton.addEventListener("click", () => {
-    const word = currentDeck[currentIndex];
-    card.innerHTML = isGermanFirst ? word.italian + ": " + word.german : word.german + ": " + word.italian;
-});
-
-// Switching the language display
-switchButton.addEventListener("click", () => {
-    isGermanFirst = !isGermanFirst;
-    displayWord();
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        card.innerHTML = isGermanFirst ? word.german + ": " + word.italian : word.italian + ": " + word.german;
+    }
 });
