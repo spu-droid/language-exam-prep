@@ -227,26 +227,26 @@ controlButtons.forEach(button => {
         console.log("Control button clicked:", difficulty);
         const word = currentDeck[currentIndex];
         const wordId = word.id;
-
-        if (difficulty === "easy") {
-            console.log("Easy button pressed");
-            const today = new Date().toLocaleDateString('en-GB');
-            update(ref(database, `words/${wordId}`), { lock_date: today })
-                .then(() => console.log("Lock date set to today:", today))
-                .catch(error => console.error("Failed to set lock date:", error));
-			updateWordsLearned();
-			updateWordsToLearn();
-        } else if (difficulty === "again") {
-            console.log("Again button pressed");
-            sendToQue(wordId, 1); // 1 minute
-        } else if (difficulty === "hard") {
-            console.log("Hard button pressed");
-            sendToQue(wordId, 6); // 6 minutes
-        } else if (difficulty === "good") {
-            console.log("Good button pressed");
-            sendToQue(wordId, 10); // 10 minutes
+        if ( viewMode === "Learn" ) {
+			if (difficulty === "easy") {
+				console.log("Easy button pressed");
+				const today = new Date().toLocaleDateString('en-GB');
+				update(ref(database, `words/${wordId}`), { lock_date: today })
+					.then(() => console.log("Lock date set to today:", today))
+					.catch(error => console.error("Failed to set lock date:", error));
+				updateWordsLearned();
+				updateWordsToLearn();
+			} else if (difficulty === "again") {
+				console.log("Again button pressed");
+				sendToQue(wordId, 1); // 1 minute
+			} else if (difficulty === "hard") {
+				console.log("Hard button pressed");
+				sendToQue(wordId, 6); // 6 minutes
+			} else if (difficulty === "good") {
+				console.log("Good button pressed");
+				sendToQue(wordId, 10); // 10 minutes
+			}
         }
-
         // Move to next word or wrap around
         currentIndex = (currentIndex + 1) % currentDeck.length;
         displayWord();
