@@ -245,6 +245,39 @@ controlButtons.forEach(button => {
     });
 });
 
+
+
+function sendToQueue(wordId, minutes) {
+    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
+    const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
+
+    if (word) {
+        // Attempt to place the word in the first available null spot
+        let placed = false;
+        for (let i = 0; i < countdown_timers.length; i++) {
+            if (!countdown_timers[i]) {
+                countdown_timers[i] = { word, timer: setTimeout(() => moveToReadyArray(i), milliseconds) };
+                placed = true;
+                console.log(`Placed '${word.german}' in countdown_timers at index ${i} at ${new Date().toLocaleTimeString()}.`);
+                break;
+            }
+        }
+
+        // If no spot was found, push to the end
+        if (!placed) {
+            countdown_timers.push({
+                word,
+                timer: setTimeout(() => moveToReadyArray(countdown_timers.length - 1), milliseconds)
+            });
+            console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
+        }
+    } else {
+        console.error("Word not found in current deck.");
+    }
+
+    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
+}
+
 function moveToReadyArray(index) {
     // Ensure the index is valid and the timer slot exists
     if (index >= 0 && index < countdown_timers.length && countdown_timers[index] && countdown_timers[index].timer) {
@@ -269,15 +302,6 @@ function displayArrays() {
 }
 
 
-function moveToReadyArray(index) {
-    if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
-        let word = countdown_timers[index].word;
-        ready_array.unshift(word); // Add the word to the beginning of the ready_array
-        countdown_timers[index] = null; // Clear the timer slot
 
-        console.log(`Word '${word.german}' is now ready for review. Moved to ready_array at ${new Date().toLocaleTimeString()}.`);
-        console.log("Updated ready_array:", ready_array.map(item => item.german));
-    } else {
-        console.error("Invalid index or no timer found at this index:", index);
-    }
-}
+
+
