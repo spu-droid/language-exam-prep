@@ -1,5 +1,3 @@
-
-
 const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
