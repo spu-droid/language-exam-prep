@@ -1,10 +1,12 @@
-
+// Assume the file is using ES modules
+import { controlButtons } from './learningAlgorithm.js';
 
 export const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
     deckData: [],
     currentIndex: 0,
+    countdownTimers: [],
     resetTimersDaily: [],
 
     initialize: function() {
@@ -13,65 +15,35 @@ export const learningAlgorithm = {
     },
 
     setupEventListeners: function() {
-        this.controlButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const difficulty = button.getAttribute("data-difficulty");
-                this.handleDifficulty(difficulty);
-            });
-        });
+        const modeSwitchButton = document.getElementById("mode-switch");
+        if (modeSwitchButton) {
+            modeSwitchButton.addEventListener("click", () => this.toggleMode(true));
+        } else {
+            console.error("Mode switch button not found.");
+        }
     },
 
     toggleMode: function(alertToggle) {
         this.mode = (this.mode === "View") ? "Learn" : "View";
-        document.getElementById("mode-display").textContent = `Mode: ${this.mode}`;
-        this.updateButtonStates();
-        if (alertToggle) alert(`Switched to ${this.mode} mode.`);
-    },
+        const modeDisplay = document.getElementById("mode-display");
+        if (modeDisplay) {
+            modeDisplay.textContent = `Mode: ${this.mode}`;
+            if (alertToggle) alert(`Switched to ${this.mode} mode.`);
+        }
+        const prevButton = document.getElementById("prev");
+        const nextButton = document.getElementById("next");
 
-    updateButtonStates: function() {
-        const isView = this.mode === "View";
-        document.getElementById("prev").disabled = isView;
-        document.getElementById("next").disabled = isView;
-        this.controlButtons.forEach(button => button.disabled = isView);
-    },
-
-    handleDifficulty: function(difficulty) {
-        const word = this.deckData[this.currentIndex];
-        const today = new Date().toLocaleDateString('en-GB');
-        if (difficulty === "easy") {
-            update(ref(database, `words/${word.id}`), { lock_date: today });
-            this.moveToNextAvailableWord();
+        if(prevButton && nextButton) {
+            prevButton.disabled = this.mode !== "View";
+            nextButton.disabled = this.mode !== "View";
+            this.controlButtons.forEach(button => button.disabled = this.mode === "View");
         } else {
-            this.moveToNextAvailableWord();
+            console.error("Navigation buttons not found.");
         }
-    },
-
-    moveToNextAvailableWord: function() {
-        this.currentIndex++;
-        this.nextAvailableWord();
-    },
-
-    nextAvailableWord: function() {
-        const today = new Date().toLocaleDateString('en-GB');
-        while (this.currentIndex < this.deckData.length && this.deckData[this.currentIndex].lock_date === today) {
-            this.currentIndex++;
-        }
-        if (this.currentIndex < this.deckData.length) {
-            this.displayWord2();
-        } else {
-            console.log("No available words to review today. Please come back tomorrow.");
-        }
-    },
-
-    displayWord2: function() {
-        const word = this.deckData[this.currentIndex];
-        document.getElementById("card").textContent = word.german;
-        document.getElementById("word-count").textContent = `Words in total: ${this.deckData.length}`;
     }
 };
 
+// Ensure the DOM is fully loaded before running script
 document.addEventListener("DOMContentLoaded", () => {
-    learningAlgorithm.initialize();
+    learningAlgorithm.initialize(); // Initialize the algorithm
 });
-
-// Note: Make sure you have correct paths and config imports for Firebase
