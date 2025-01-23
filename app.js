@@ -246,54 +246,56 @@ controlButtons.forEach(button => {
 });
 
 function sendToQue(wordId, minutes) {
-    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
+    const milliseconds = minutes * 60 * 1000;  // Convert minutes to milliseconds
     const wordIndex = currentDeck.findIndex(word => word.id === wordId);
 
     if (wordIndex > -1) {
         let word = currentDeck[wordIndex];
-        word.lock_date = "inPool"; // Set lock status to "inPool"
+        word.lock_date = "inPool";  // Set lock status to "inPool"
 
-        // Create a timer and store it without needing to manage indices
-        let timer = setTimeout(() => {
-            // Here, instead of using an index, the timer clears itself by setting its own indicator to null
-            // Find itself in the array
-            let foundIndex = countdown_timers.findIndex(timerEntry => timerEntry && timerEntry.word.id === word.id);
-            if (foundIndex !== -1) {
-                countdown_timers[foundIndex].timer = null; // Mark as done
-                finishCountdown(); // Call to finish
-            }
-        }, milliseconds);
-
-        // Find the first available spot or push to the end
+        // Find the first available spot in the countdown_timers array
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
-                countdown_timers[i] = { word, timer };
+                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(word), milliseconds) };
                 placed = true;
+                console.log(`[${new Date().toLocaleTimeString()}] Word '${word.german}' placed in countdown_timers at index ${i}`);
                 break;
             }
         }
+
+        // If no spot was available, push to the end
         if (!placed) {
-            countdown_timers.push({ word, timer });
+            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(word), milliseconds) });
+            console.log(`[${new Date().toLocaleTimeString()}] No available spot found. Word '${word.german}' pushed to end of countdown_timers.`);
         }
     } else {
         console.error("Word not found in current deck.");
     }
 }
 
-function finishCountdown() {
-    // Loop through countdown_timers to find the word that's ready
-    for (let i = 0; i < countdown_timers.length; i++) {
-        if (countdown_timers[i] && countdown_timers[i].timer === null) { // Assume timer set to null means it's done
-            let word = countdown_timers[i].word;
-            countdown_timers[i] = null; // Clear the slot
+function finishCountdown(word) {
+    // Find the index for cleanup
+    const index = countdown_timers.findIndex(timer => timer && timer.word.id === word.id);
+    if (index !== -1) {
+        clearTimeout(countdown_timers[index].timer);  // Clear the timer
+        countdown_timers[index] = null;  // Free up the slot
+    }
 
-            // Add to ready_array and log
-            if (word) {
-                ready_array.push(word);
-                console.log(`[${new Date().toLocaleTimeString()}] Word ${word.german} is now ready for review again.`);
-            }
-            break; // Exit after handling the first found word
+    // Find the first available spot in the ready_array
+    let placed = false;
+    for (let i = 0; i < ready_array.length; i++) {
+        if (!ready_array[i]) {
+            ready_array[i] = word;
+            placed = true;
+            console.log(`[${new Date().toLocaleTimeString()}] Word '${word.german}' is now ready for review again and placed at index ${i} in ready_array.`);
+            break;
         }
+    }
+
+    // If no spot was available, push to the end
+    if (!placed) {
+        ready_array.push(word);
+        console.log(`[${new Date().toLocaleTimeString()}] No available spot found in ready_array. Word '${word.german}' pushed to end of ready_array.`);
     }
 }
