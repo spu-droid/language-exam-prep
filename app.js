@@ -236,6 +236,7 @@ controlButtons.forEach(button => {
                         console.log("Lock date set to today:", today);
                         updateWordsLearned();
                         updateWordsToLearn();
+						displayWord()
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
             } else if (difficulty === "again") {
