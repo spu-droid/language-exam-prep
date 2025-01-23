@@ -84,7 +84,7 @@ function updateWordsToLearn() {
 }
 
 function updateLeftWords() {
-	const leftWords = (wordsToLearnCount -- learnedWordsCount)
+	const leftWords = (wordsToLearnCount - learnedWordsCount)
 	document.getElementById("words-to-learn").textContent = `Words to learn2: ${leftWords}`;          //here
 }
 
