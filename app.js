@@ -1,7 +1,3 @@
-// Firebase imports
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
-
 // Firebase configuration and initialization
 const firebaseConfig = {
     apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
@@ -29,13 +25,13 @@ const addButton = document.getElementById("add");
 const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
-const modeDisplay2 = document.getElementById("mode2");
+const modeSwitchButton = document.getElementById("mode-switch"); // Toggle button for view/learn mode
 
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;
+let mode = "View";  // Default mode
 
-// Handling deck button interactions
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
         deckButtons.forEach(btn => btn.classList.remove("active"));
@@ -43,6 +39,24 @@ deckButtons.forEach(button => {
         fetchWords(this.getAttribute("data-deck"));
     });
 });
+
+// Toggle mode between View and Learn
+modeSwitchButton.addEventListener("click", () => {
+    mode = mode === "View" ? "Learn" : "View";
+    modeDisplay.textContent = `Mode: ${mode}`;
+    updateUIForMode();
+});
+
+function updateUIForMode() {
+    const isView = mode === "View";
+    nextButton.disabled = !isView;
+    prevButton.disabled = !isView;
+    showAnswerButton.disabled = !isView;
+    switchButton.disabled = !isView;
+    addButton.disabled = mode !== "View";
+    editButton.disabled = mode !== "View";
+    deleteButton.disabled = mode !== "View";
+}
 
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
@@ -71,7 +85,6 @@ function displayWord() {
     }
 }
 
-// Navigating through cards
 nextButton.addEventListener("click", () => {
     if (currentIndex < currentDeck.length - 1) {
         currentIndex++;
@@ -90,7 +103,16 @@ prevButton.addEventListener("click", () => {
     }
 });
 
-// Managing CRUD operations for flashcards
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex];
+    card.innerHTML = `${isGermanFirst ? word.german + ': ' + word.italian : word.italian + ': ' + word.german}`;
+});
+
+switchButton.addEventListener("click", () => {
+    isGermanFirst = !isGermanFirst;
+    displayWord();
+});
+
 addButton.addEventListener("click", () => {
     const italian = prompt("Enter Italian word:");
     const german = prompt("Enter German word:");
@@ -111,38 +133,22 @@ editButton.addEventListener("click", () => {
         category: currentDeck[currentIndex].category
     };
     const updates = {};
-    updates['/words/' + Object.keys(currentDeck)[currentIndex]] = updatedWord;
+    updates['/words/' + currentDeck[currentIndex].id] = updatedWord;
     update(ref(database), updates);
 });
 
 deleteButton.addEventListener("click", () => {
-    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        if (confirm("Are you sure you want to delete this word?")) {
-            const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
-            remove(wordRef).then(() => {
-                console.log("Word deleted successfully.");
-                currentDeck.splice(currentIndex, 1);
-                if (currentIndex >= currentDeck.length) {
-                    currentIndex = currentDeck.length - 1; // Adjust index if needed
-                }
-                displayWord();
-            }).catch(error => {
-                console.error("Failed to delete word:", error);
-            });
-        }
-    } else {
-        console.log("No word selected or deck is empty.");
+    if (confirm("Are you sure you want to delete this word?")) {
+        const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
+        remove(wordRef).then(() => {
+            console.log("Word deleted successfully.");
+            currentDeck.splice(currentIndex, 1);
+            if (currentIndex >= currentDeck.length) {
+                currentIndex = currentDeck.length - 1; // Adjust index if needed
+            }
+            displayWord();
+        }).catch(error => {
+            console.error("Failed to delete word:", error);
+        });
     }
-});
-
-// Showing the answer
-showAnswerButton.addEventListener("click", () => {
-    const word = currentDeck[currentIndex];
-    card.innerHTML = isGermanFirst ? word.italian + ": " + word.german : word.german + ": " + word.italian;
-});
-
-// Switching the language display
-switchButton.addEventListener("click", () => {
-    isGermanFirst = !isGermanFirst;
-    displayWord();
 });
