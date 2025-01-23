@@ -221,70 +221,59 @@ controlButtons.forEach(button => {
             console.log("Control button clicked:", difficulty);
             const word = currentDeck[currentIndex];
             const wordId = word.id;
+
             if (difficulty === "easy") {
                 console.log("Easy button pressed");
                 const today = new Date().toLocaleDateString('en-GB');
                 update(ref(database, `words/${wordId}`), { lock_date: today })
                     .then(() => {
-                        console.log("Lock date set to today:", today)
+                        console.log(`Lock date set to today for word: ${word.german}`, today);
+                        updateWordsLearned();
+                        updateWordsToLearn();
+                        displayWord();
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
-				learnedWordsCount++;
-				updateWordsLearned();
-                updateWordsToLearn();
-				displayWord();
-            } else if (difficulty === "again") {
-                console.log("Again button pressed");
-                sendToQue(wordId, 1); // 1 minute
-            } else if (difficulty === "hard") {
-                console.log("Hard button pressed");
-                sendToQue(wordId, 6); // 6 minutes
-            } else if (difficulty === "good") {
-                console.log("Good button pressed");
-                sendToQue(wordId, 10); // 10 minutes
+            } else if (["again", "hard", "good"].includes(difficulty)) {
+                console.log(`${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} button pressed for word: ${word.german}`);
+                sendToQue(wordId, difficulty === "again" ? 1 : (difficulty === "hard" ? 6 : 10));
             }
 
-            // Move to next word or wrap around
+            // Move to the next word or wrap around
             currentIndex = (currentIndex + 1) % currentDeck.length;
             displayWord();
         }
     });
 });
 
+function finishCountdown(index) {
+    let word = countdown_timers[index].word;
+    countdown_timers[index] = null; // Free up the slot
+    ready_array.push(word); // Add to ready_array
+    console.log(`Word ${word.id} with German: ${word.german} is now ready for review again.`);
+}
+
 function sendToQue(wordId, minutes) {
     const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
     const wordIndex = currentDeck.findIndex(word => word.id === wordId);
 
     if (wordIndex > -1) {
-        let word = {...currentDeck[wordIndex]}; // Clone the word to avoid direct reference issues
+        let word = currentDeck[wordIndex];
         word.lock_date = "inPool"; // Set lock status to "inPool"
 
         // Find the first available spot in the countdown timers
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
-                countdown_timers[i] = { word: {...word}, timer: setTimeout(() => finishCountdown(i), milliseconds) };
+                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
                 placed = true;
                 break;
             }
         }
         // If no spot was available, push to the end
         if (!placed) {
-            countdown_timers.push({ word: {...word}, timer: setTimeout(() => finishCountdown(countdown_timers.length - 1), milliseconds) });
+            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length), milliseconds) });
         }
     } else {
         console.error("Word not found in current deck.");
     }
 }
-
-function finishCountdown(index) {
-    if (index >= 0 && countdown_timers[index] && countdown_timers[index].word) {
-        let word = countdown_timers[index].word;
-        countdown_timers[index] = null; // Free up the slot
-        ready_array.push(word); // Add to ready_array
-        console.log(`Word ${word.id} is now ready for review again.`);
-    } else {
-        console.error("Invalid index or word not available.");
-    }
-}
-
