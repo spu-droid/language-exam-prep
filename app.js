@@ -67,14 +67,12 @@ function fetchWords(deck) {
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-    const wordsLearnedElement = document.getElementById("words-learned");
+    document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
+}
 
-    if (wordsLearnedElement) {
-        wordsLearnedElement.textContent = `Words learned: ${learnedCount}`;
-        console.log(`Updated words learned to ${learnedCount}`); // Log to verify it's being updated
-    } else {
-        console.error('Failed to find the element with ID "words-learned" to update words learned count.');
-    }
+function updateWordsToLearn() {
+    const wordsToLearnCount = currentDeck.length;
+    document.getElementById("word-count").textContent = `Words to learn: ${wordsToLearnCount}`;
 }
 /*
 // Display the current word
@@ -108,6 +106,7 @@ function displayWord() {
                 wordCount.textContent = "Words in total: " + currentDeck.length;
                 modeDisplay.textContent = "";
                 updateWordsLearned(); // Update learned count even when no words are available
+				updateWordsToLearn();
             }
         } else {
             // Display the word if not locked or in View mode
@@ -115,6 +114,7 @@ function displayWord() {
             wordCount.textContent = `Words in total: ${currentDeck.length}`;
             modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
             updateWordsLearned(); // Always update the learned words count on word display
+			updateWordsToLearn();
         }
     } else {
         // Handle case when there are no words in the deck
@@ -122,6 +122,7 @@ function displayWord() {
         wordCount.textContent = "Words in total: 0";
         modeDisplay.textContent = "";
         updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
+		updateWordsToLearn();
     }
 }
 
@@ -234,6 +235,7 @@ controlButtons.forEach(button => {
                 .then(() => console.log("Lock date set to today:", today))
                 .catch(error => console.error("Failed to set lock date:", error));
 			updateWordsLearned();
+			updateWordsToLearn();
         } else if (difficulty === "again") {
             console.log("Again button pressed");
             sendToQue(wordId, 1); // 1 minute
