@@ -235,7 +235,7 @@ controlButtons.forEach(button => {
                     .catch(error => console.error("Failed to set lock date:", error));
             } else if (["again", "hard", "good"].includes(difficulty)) {
                 console.log(`${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} button pressed for word: ${word.german}`);
-                sendToQue(wordId, difficulty === "again" ? 1 : (difficulty === "hard" ? 6 : 10));
+                sendToQueue(wordId, difficulty === "again" ? 1 : (difficulty === "hard" ? 6 : 10));
             }
 
             // Move to the next word or wrap around
