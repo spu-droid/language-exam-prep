@@ -1,3 +1,5 @@
+import { controlButtons } from '.app.js';
+
 const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
@@ -40,7 +42,7 @@ const learningAlgorithm = {
     }
 };
 
-export { learningAlgorithm };
+export { learningAlgorithm, controlButtons };
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded and parsed");
