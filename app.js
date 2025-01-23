@@ -253,35 +253,47 @@ function sendToQue(wordId, minutes) {
         let word = currentDeck[wordIndex];
         word.lock_date = "inPool"; // Set lock status to "inPool"
 
-        // Find the first available spot in the countdown timers
+        // Create a timer and store it without needing to manage indices
+        let timer = setTimeout(() => {
+            // Here, instead of using an index, the timer clears itself by setting its own indicator to null
+            // Find itself in the array
+            let foundIndex = countdown_timers.findIndex(timerEntry => timerEntry && timerEntry.word.id === word.id);
+            if (foundIndex !== -1) {
+                countdown_timers[foundIndex].timer = null; // Mark as done
+                finishCountdown(); // Call to finish
+            }
+        }, milliseconds);
+
+        // Find the first available spot or push to the end
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
-                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
+                countdown_timers[i] = { word, timer };
                 placed = true;
                 break;
             }
         }
-        // If no spot was available, push to the end
         if (!placed) {
-            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length), milliseconds) });
-            console.log(`[${new Date().toLocaleTimeString()}] No available spot was found. Pushing to end of countdown_timers array.`);
+            countdown_timers.push({ word, timer });
         }
     } else {
         console.error("Word not found in current deck.");
     }
 }
 
-function finishCountdown(index) {
-    if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
-        let word = countdown_timers[index].word;
-        countdown_timers[index] = null;  // Free up the slot
+function finishCountdown() {
+    // Loop through countdown_timers to find the word that's ready
+    for (let i = 0; i < countdown_timers.length; i++) {
+        if (countdown_timers[i] && countdown_timers[i].timer === null) { // Assume timer set to null means it's done
+            let word = countdown_timers[i].word;
+            countdown_timers[i] = null; // Clear the slot
 
-        if (word) {  // Check if the word is still there before pushing to ready_array
-            ready_array.push(word); // Add to ready_array
-            console.log(`[${new Date().toLocaleTimeString()}] Word ${word.german} is now ready for review again.`);
+            // Add to ready_array and log
+            if (word) {
+                ready_array.push(word);
+                console.log(`[${new Date().toLocaleTimeString()}] Word ${word.german} is now ready for review again.`);
+            }
+            break; // Exit after handling the first found word
         }
-    } else {
-        console.error("Invalid index or no timer found at this index:", index);
     }
 }
