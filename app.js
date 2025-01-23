@@ -66,14 +66,40 @@ function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
-        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
-        currentIndex = 0;
-        displayWord();
+        currentDeck = Object.entries(data)
+            .filter(([key, word]) => word.category && word.category.includes(deck))
+            .map(([key, word]) => ({ ...word, id: key }));
+
+        if (learningAlgorithm.mode === "Learn") {
+            filterWordsForLearningMode();
+        } else {
+            currentIndex = 0;
+            displayWord();
+        }
     }, {
         onlyOnce: true
     });
 }
 
+function filterWordsForLearningMode() {
+    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }); // Ensuring the date is in dd/mm/yyyy format
+    let foundWord = false;
+
+    for (let i = 0; i < currentDeck.length; i++) {
+        if (currentDeck[i].lock_date !== today) {
+            currentIndex = i;
+            foundWord = true;
+            displayWord();
+            break;
+        }
+    }
+
+    if (!foundWord) {
+        card.innerHTML = "No available words to review today. Please come back tomorrow.";
+        wordCount.textContent = "Words in total: " + currentDeck.length;
+        modeDisplay.textContent = "";
+    }
+}
 document.addEventListener("DOMContentLoaded", () => {
     controlButtons.forEach(button => button.disabled = true);  // Disable control buttons initially
 });
