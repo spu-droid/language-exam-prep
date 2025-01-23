@@ -256,21 +256,21 @@ function sendToQue(wordId, minutes) {
     const wordIndex = currentDeck.findIndex(word => word.id === wordId);
 
     if (wordIndex > -1) {
-        let word = {...currentDeck[wordIndex]}; // Clone the word to avoid direct reference issues
+        let word = currentDeck[wordIndex];
         word.lock_date = "inPool"; // Set lock status to "inPool"
 
         // Find the first available spot in the countdown timers
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
-                countdown_timers[i] = { word: {...word}, timer: setTimeout(() => finishCountdown(i), milliseconds) };
+                countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
                 placed = true;
                 break;
             }
         }
         // If no spot was available, push to the end
         if (!placed) {
-            countdown_timers.push({ word: {...word}, timer: setTimeout(() => finishCountdown(countdown_timers.length - 1), milliseconds) });
+            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length), milliseconds) });
         }
     } else {
         console.error("Word not found in current deck.");
@@ -278,13 +278,16 @@ function sendToQue(wordId, minutes) {
 }
 
 function finishCountdown(index) {
-    if (index >= 0 && countdown_timers[index] && countdown_timers[index].word) {
-        let word = countdown_timers[index].word;
-        countdown_timers[index] = null; // Free up the slot
-        ready_array.push(word); // Add to ready_array
-        console.log(`Word ${word.id} is now ready for review again.`);
-    } else {
-        console.error("Invalid index or word not available.");
-    }
+    let word = countdown_timers[index].word;
+    countdown_timers[index] = null; // Free up the slot
+    ready_array.push(word); // Add to ready_array
+    console.log(`Word ${word.id} is now ready for review again.`);
 }
 
+function retrieveFromReadyArray() {
+    if (ready_array.length > 0) {
+        let word = ready_array.shift(); // Take the first word
+        return word;
+    }
+    return null; // No words are ready
+}
