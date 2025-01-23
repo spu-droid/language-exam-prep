@@ -35,7 +35,7 @@ const addButton = document.getElementById("add");
 const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
-export const controlButtons = document.querySelectorAll(".control-btn");
+const controlButtons = document.querySelectorAll(".control-btn");
 const switchButton2 = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
 
