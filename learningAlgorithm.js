@@ -113,3 +113,5 @@ function displayWord() {
         modeDisplay.textContent = "";
     }
 }
+
+export { learningAlgorithm };
