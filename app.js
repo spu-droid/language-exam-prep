@@ -172,7 +172,7 @@ deleteButton.addEventListener("click", () => {
 
 // app.js
 // Exporting variables and functions from app.js
-export const controlButtons = document.querySelectorAll(".control-btn");
+//export const controlButtons = document.querySelectorAll(".control-btn");
 // export { database, fetchWords, displayWord };  // Add other exports as necessary
 
 // export other necessary variables or functions
