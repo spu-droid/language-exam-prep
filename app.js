@@ -2,6 +2,11 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
+import { learningAlgorithm } from './path/to/your/module.js';
+
+// Now you can use learningAlgorithm in this module
+learningAlgorithm.initialize();
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
