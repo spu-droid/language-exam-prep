@@ -1,6 +1,6 @@
 import { controlButtons } from '.app.js';
 
-const learningAlgorithm = {
+export const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
     deckData: [],
