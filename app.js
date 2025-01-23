@@ -2,7 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
-import { learningAlgorithm, controlButtons } from '.learningAlgorithm.js';
+import { learningAlgorithm } from '.learningAlgorithm.js';
 
 // Now you can use learningAlgorithm in this module
 learningAlgorithm.initialize();
@@ -176,9 +176,52 @@ deleteButton.addEventListener("click", () => {
 
 
 
-// app.js
-// Exporting variables and functions from app.js
-//export const controlButtons = document.querySelectorAll(".control-btn");
-// export { database, fetchWords, displayWord };  // Add other exports as necessary
+controlButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        console.log("Control button clicked:", button.getAttribute("data-difficulty"));
+        if (button.getAttribute("data-difficulty") === "easy") {
+            console.log("Easy button pressed");
+            // Implement your Anki-like algorithm here for "easy"
+			const today = new Date().toLocaleDateString('en-GB');
+			const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
+            update(wordRef, { lock_date: today })
+                .then(() => console.log("Lock date set to today:", today))
+                .catch(error => console.error("Failed to set lock date:", error));
+        } else if (button.getAttribute("data-difficulty") === "again") {
+            console.log("Again button pressed");
+            // Implement the action for "again"
+			learningFlashcards(deck);
+        } else if (button.getAttribute("data-difficulty") === "hard") {
+            console.log("Hard button pressed");
+            // Implement the action for "hard"
+			learningFlashcards(deck);
+        } else if (button.getAttribute("data-difficulty") === "good") {
+            console.log("Good button pressed");
+            // Implement the action for "good"
+			learningFlashcards(deck);
+        } else {
+            console.log("Unknown difficulty button pressed");
+            // Handle any other cases or ignore
+        }
+    });
+});
 
-// export other necessary variables or functions
+function learningFlashcards(deck) {
+    const wordsRef = ref(database, 'words');
+    onValue(wordsRef, snapshot => {
+        const data = snapshot.val();
+        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
+        currentIndex = 0;
+        nextAvailableWord();
+    }, {
+        onlyOnce: true
+    });
+}
+
+function nextAvailableWord() {
+    const today = new Date().toLocaleDateString('en-GB');
+    while (currentIndex < currentDeck.length && currentDeck[currentIndex].lock_date === today) {
+        currentIndex++; // Skip the word locked for today
+    }
+    displayWord(); // Display the next available word
+}
