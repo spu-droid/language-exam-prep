@@ -31,6 +31,7 @@ const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
 const modeSwitchButton = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
+const controlButtons = document.querySelectorAll(".control-btn"); // Again, Hard, Good, Easy butto
 
 let currentDeck = [];
 let currentIndex = 0;
@@ -78,10 +79,31 @@ switchButton.addEventListener("click", () => {
 });
 
 // Toggle learning mode
+// UI Elements
+const modeSwitchButton = document.getElementById("mode-switch");
+const modeDisplay2 = document.getElementById("mode2");
+const controlButtons = document.querySelectorAll(".control-btn"); // Control buttons like Again, Hard, Good, Easy
+const prevButton = document.getElementById("prev");
+const nextButton = document.getElementById("next");
+
+let viewMode = "View"; // Default mode is View
+
+// Event listener for the mode switch button
 modeSwitchButton.addEventListener("click", () => {
+    // Toggle the mode between View and Learn
     viewMode = viewMode === "View" ? "Learn" : "View";
     modeDisplay2.textContent = `Learning Mode: ${viewMode}`;
+
+    // Update the enabled state of control and navigation buttons based on the mode
+    controlButtons.forEach(button => {
+        button.disabled = (viewMode === "View"); // Disable learning control buttons in View mode
+    });
+
+    // Enable navigation buttons in View mode and disable them in Learn mode
+    prevButton.disabled = (viewMode === "Learn");
+    nextButton.disabled = (viewMode === "Learn");
 });
+
 
 // Navigation through cards
 nextButton.addEventListener("click", () => {
