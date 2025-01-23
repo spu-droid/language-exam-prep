@@ -260,35 +260,22 @@ function sendToQueue(wordId, minutes) {
         ready_array.unshift(word);
         console.log(`'${word.german}' is due immediately. Prepending to ready_array.`);
     } else {
-        // Prepare the word object with its intended timer end time
-        const endTime = new Date().getTime() + milliseconds;
-        const timerObject = { word, endTime };
+        // Schedule the word with a timer
+        const timer = setTimeout(() => {
+            // Append to the end of ready_array when the timer completes
+            ready_array.push(word);
+            console.log(`'${word.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
+        }, milliseconds);
 
-        // Push directly to the countdown queue
-        countdown_timers.push(timerObject);
-        countdown_timers.sort((a, b) => a.endTime - b.endTime); // Ensure the queue is ordered by endTime
-
-        console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(endTime).toLocaleTimeString()}.`);
+        console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(Date.now() + milliseconds).toLocaleTimeString()}.`);
     }
 
     // Optionally, display the arrays for debugging
-    console.log("Current countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
     console.log("Current ready_array:", ready_array.map(word => word.german));
 }
 
-function processTimers() {
-    const now = new Date().getTime();
-    // Move all words whose timer has expired to the ready_array
-    while (countdown_timers.length > 0 && countdown_timers[0].endTime <= now) {
-        let item = countdown_timers.shift(); // Remove from the front of the queue
-        ready_array.push(item.word); // Add to the end of the ready_array
-        console.log(`Moved '${item.word.german}' to ready_array at ${new Date().toLocaleTimeString()}.`);
-    }
-
-    // Display the updated arrays
-    console.log("Updated countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
-
-    console.log("Updated ready_array:", ready_array.map(word => word.german));
+function displayArrays() {
+    console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
 }
 
 
