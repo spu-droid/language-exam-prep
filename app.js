@@ -236,26 +236,25 @@ controlButtons.forEach(button => {
                         console.log("Lock date set to today:", today);
                         updateWordsLearned();
                         updateWordsToLearn();
-						displayWord()
+                        // Update the UI immediately after updating the database
+                        currentIndex = (currentIndex + 1) % currentDeck.length;
+                        displayWord();
                     })
-                    .catch(error => console.error("Failed to set lock date:", error));
-            } else if (difficulty === "again") {
-                console.log("Again button pressed");
-                sendToQue(wordId, 1); // 1 minute
-            } else if (difficulty === "hard") {
-                console.log("Hard button pressed");
-                sendToQue(wordId, 6); // 6 minutes
-            } else if (difficulty === "good") {
-                console.log("Good button pressed");
-                sendToQue(wordId, 10); // 10 minutes
+                    .catch(error => {
+                        console.error("Failed to set lock date:", error);
+                        // Handle the error properly here, maybe notify the user
+                    });
+            } else if (difficulty === "again" || difficulty === "hard" || difficulty === "good") {
+                console.log(`${difficulty} button pressed`);
+                // Assuming sendToQue updates the UI or has some callback that does
+                sendToQue(wordId, difficulty === "again" ? 1 : difficulty === "hard" ? 6 : 10);
+                currentIndex = (currentIndex + 1) % currentDeck.length;
+                displayWord();
             }
-
-            // Move to next word or wrap around
-            currentIndex = (currentIndex + 1) % currentDeck.length;
-            displayWord();
         }
     });
 });
+
 
 function sendToQue(wordId, minutes) {
     const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
