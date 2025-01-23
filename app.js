@@ -171,6 +171,7 @@ deleteButton.addEventListener("click", () => {
 });
 
 
+
 // app.js
 // Exporting variables and functions from app.js
 //export const controlButtons = document.querySelectorAll(".control-btn");
