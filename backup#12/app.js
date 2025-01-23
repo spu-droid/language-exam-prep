@@ -92,11 +92,6 @@ modeSwitchButton.addEventListener("click", () => {
     // Enable navigation buttons in View mode and disable them in Learn mode
     prevButton.disabled = (viewMode === "Learn");
     nextButton.disabled = (viewMode === "Learn");
-	
-	if (viewMode === "Learn") {
-        currentIndex = 0;  // Set currentIndex to 0 to start from the first card
-        displayWord();     // Display the first word of the current deck
-    }
 });
 
 
