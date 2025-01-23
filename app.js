@@ -262,19 +262,24 @@ function sendToQueue(wordId, minutes) {
     } else {
         // Schedule the word with a timer
         const timer = setTimeout(() => {
-            // Append to the end of ready_array when the timer completes
-            ready_array.push(word);
-            console.log(`'${word.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
+            // Move the first word in the countdown queue to the ready_array
+            const scheduledWord = countdown_queue.shift();
+            ready_array.push(scheduledWord);
+            console.log(`'${scheduledWord.german}' timer completed. Appended to ready_array at ${new Date().toLocaleTimeString()}.`);
         }, milliseconds);
 
+        // Add the word to the countdown queue to maintain the order
+        countdown_queue.push(word);
         console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(Date.now() + milliseconds).toLocaleTimeString()}.`);
     }
 
     // Optionally, display the arrays for debugging
+    console.log("Current countdown_queue:", countdown_queue.map(word => word.german));
     console.log("Current ready_array:", ready_array.map(word => word.german));
 }
 
 function displayArrays() {
+    console.log("Current countdown_queue: [" + countdown_queue.map(word => word ? word.german : 'Empty').join(', ') + "]");
     console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
 }
 
