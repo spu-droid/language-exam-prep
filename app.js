@@ -250,7 +250,16 @@ function sendToQueue(wordId, minutes) {
     const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
     const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
 
-    if (word) {
+    if (!word) {
+        console.error("Word not found in current deck.");
+        return;
+    }
+
+    if (milliseconds === 0) {
+        // If the timing is immediate, prepend to the ready_array
+        ready_array.unshift(word);
+        console.log(`'${word.german}' is due immediately. Prepending to ready_array.`);
+    } else {
         // Prepare the word object with its intended timer end time
         const endTime = new Date().getTime() + milliseconds;
         const timerObject = { word, endTime };
@@ -260,12 +269,11 @@ function sendToQueue(wordId, minutes) {
         countdown_timers.sort((a, b) => a.endTime - b.endTime); // Ensure the queue is ordered by endTime
 
         console.log(`Scheduled '${word.german}' for moving to ready_array at ${new Date(endTime).toLocaleTimeString()}.`);
-    } else {
-        console.error("Word not found in current deck.");
     }
 
-    // Optionally, display the queue for debugging
+    // Optionally, display the arrays for debugging
     console.log("Current countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
+    console.log("Current ready_array:", ready_array.map(word => word.german));
 }
 
 function processTimers() {
@@ -273,18 +281,15 @@ function processTimers() {
     // Move all words whose timer has expired to the ready_array
     while (countdown_timers.length > 0 && countdown_timers[0].endTime <= now) {
         let item = countdown_timers.shift(); // Remove from the front of the queue
-        ready_array.push(item.word); // Add to the ready_array
+        ready_array.push(item.word); // Add to the end of the ready_array
         console.log(`Moved '${item.word.german}' to ready_array at ${new Date().toLocaleTimeString()}.`);
     }
 
     // Display the updated arrays
     console.log("Updated countdown_timers:", countdown_timers.map(item => `${item.word.german} at ${new Date(item.endTime).toLocaleTimeString()}`));
+
     console.log("Updated ready_array:", ready_array.map(word => word.german));
 }
-
-// Example function call to simulate processing at intervals or triggered by a user action
-setInterval(processTimers, 1000); // This could be a setInterval if you want to process periodically
-
 
 
 
