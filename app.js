@@ -255,42 +255,29 @@ function sendToQueue(wordId, minutes) {
         return;
     }
 
-    // Function to handle the transfer to the ready_array
-    const moveToReadyArray = (index) => {
-        clearTimeout(countdown_timers[index].timer); // Cancel the existing timer
-        countdown_timers[index] = null; // Clear the slot
-        ready_array.push(word); // Append to the ready_array
-        console.log(`'${word.german}' has completed its countdown and moved to the ready_array at ${new Date().toLocaleTimeString()}.`);
-        console.log("Updated ready_array:", ready_array.map(w => w.german));
-    };
+function moveToReadyArray(index) {
+    // Ensure the index is valid and the timer slot exists and is not null
+    if (index >= 0 && index < countdown_timers.length && countdown_timers[index] && countdown_timers[index].timer) {
+        let word = countdown_timers[index].word;
 
-    // Try to find an empty spot in the countdown_timers array
-    let placed = false;
-    for (let i = 0; i < countdown_timers.length; i++) {
-        if (!countdown_timers[i]) {
-            countdown_timers[i] = { word, timer: setTimeout(() => moveToReadyArray(i), milliseconds) };
-            console.log(`Placed '${word.german}' in an empty slot at index ${i} at ${new Date().toLocaleTimeString()}.`);
-            placed = true;
-            break;
-        }
+        // Clear the timeout to avoid any potential duplicate triggers
+        clearTimeout(countdown_timers[index].timer);
+
+        countdown_timers[index] = null; // Free up the slot
+
+        // Append the word to the end of the ready_array
+        ready_array.push(word);
+        console.log(`Word '${word.german}' is now ready for review. Moved to ready_array at ${new Date().toLocaleTimeString()}.`);
+        console.log("Updated ready_array:", ready_array.map(item => item ? item.german : 'Empty'));
+    } else {
+        console.error("Invalid index or no timer found at this index:", index);
     }
-
-    // If no empty slot is found, push to the end of the array
-    if (!placed) {
-        countdown_timers.push({
-            word,
-            timer: setTimeout(() => moveToReadyArray(countdown_timers.length), milliseconds)
-        });
-        console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
-    }
-
-    // Display the current state of countdown_timers for debugging
-    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
 }
 
-// This function just prints the current state of arrays for debugging
+// Optionally, display the arrays for debugging
 function displayArrays() {
     console.log("Current countdown_timers: [" + countdown_timers.map(item => item && item.word ? item.word.german : 'Empty').join(', ') + "]");
     console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
 }
+
 
