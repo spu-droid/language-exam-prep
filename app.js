@@ -85,7 +85,7 @@ function updateWordsToLearn() {
 
 function updateLeftWords() {
 	leftWords = (wordsToLearnCount - learnedWordsCount)
-	document.getElementById("word-count").textContent = `Words to learn2: ${leftWords}`;          //here
+	document.getElementById("words-to-learn").textContent = `Words to learn2: ${leftWords}`;          //here
 }
 
 
