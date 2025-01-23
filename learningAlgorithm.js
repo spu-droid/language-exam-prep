@@ -1,4 +1,4 @@
-export const learningAlgorithm = {
+const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
     deckData: [],
