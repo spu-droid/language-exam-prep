@@ -273,25 +273,14 @@ function sendToQue(wordId, minutes) {
 }
 
 function finishCountdown(index) {
-    // Check if the index is valid and if the countdown_timers at that index is not null
     if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
         let word = countdown_timers[index].word;
-        countdown_timers[index] = null; // Free up the slot
+        countdown_timers[index] = null;  // Free up the slot
 
-        // Implement the logic to find a place in the ready_array
-        let placed = false;
-        for (let i = 0; i < ready_array.length; i++) {
-            if (!ready_array[i]) {
-                ready_array[i] = word; // Place the word at the first available spot
-                placed = true;
-                break;
-            }
+        if (word) {  // Check if the word is still there before pushing to ready_array
+            ready_array.push(word); // Add to ready_array
+            console.log(`[${new Date().toLocaleTimeString()}] Word ${word.german} is now ready for review again.`);
         }
-        if (!placed) {
-            ready_array.push(word); // If no spot was found, push to the end of the array
-        }
-
-        console.log(`[${new Date().toLocaleTimeString()}] Word ${word.german} is now ready for review again.`);
     } else {
         console.error("Invalid index or no timer found at this index:", index);
     }
