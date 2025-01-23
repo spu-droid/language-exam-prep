@@ -250,7 +250,7 @@ controlButtons.forEach(button => {
 			// Move to next word or wrap around
 			currentIndex = (currentIndex + 1) % currentDeck.length;
 			displayWord();
-	    };
+	    }
     });
 });
 
