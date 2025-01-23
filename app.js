@@ -54,8 +54,6 @@ deckButtons.forEach(button => {
 });
 
 
-learningAlgorithm.toggleMode(); // This method will now handle everything
-
 function runLearningAlgorithm() {
     console.log("Learning algorithm is now running.");
     // Place all the logic for your learning algorithm here.
