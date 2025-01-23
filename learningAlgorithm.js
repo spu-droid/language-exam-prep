@@ -1,4 +1,4 @@
-import { controlButtons } from '.app.js';
+import { controlButtons } from './app.js';
 
 export const learningAlgorithm = {
     mode: "View",
