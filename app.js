@@ -51,13 +51,26 @@ function fetchWords(deck) {
     onValue(wordsRef, snapshot => {
         const data = snapshot.val();
         currentDeck = Object.entries(data)
-            .filter(([key, word]) => word.category.includes(deck))
+            .filter(([key, word]) => word.category && word.category.includes(deck))
             .map(([key, word]) => ({...word, id: key}));
-        currentIndex = 0;
-        displayWord();
+
+        // After fetching and filtering the words, calculate words learned today
+        updateWordsLearned();
+
+        currentIndex = 0; // Start from the first word
+        displayWord(); // Display the first or next available word
     }, {onlyOnce: true});
 }
 
+function updateWordsLearned() {
+    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const learnedCount = currentDeck.reduce((count, word) => {
+        return count + (word.lock_date === today ? 1 : 0);
+    }, 0);
+
+    const wordsLearnedDisplay = document.getElementById("words-learned");
+    wordsLearnedDisplay.textContent = `Words learned: ${learnedCount}`;
+}
 /*
 // Display the current word
 function displayWord() {
