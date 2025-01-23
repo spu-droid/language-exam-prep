@@ -245,36 +245,29 @@ controlButtons.forEach(button => {
     });
 });
 
-function sendToQueue(wordId, minutes) {
-    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
-    const word = currentDeck.find(word => word.id === wordId); // Fetch the word object from the currentDeck
+function moveToReadyArray(index) {
+    // Ensure the index is valid and the timer slot exists
+    if (index >= 0 && index < countdown_timers.length && countdown_timers[index] && countdown_timers[index].timer) {
+        let word = countdown_timers[index].word;
+        // Clear the timeout to avoid any potential duplicate triggers
+        clearTimeout(countdown_timers[index].timer);
+        countdown_timers[index] = null; // Free up the slot
 
-    if (word) {
-        // Attempt to place the word in the first available null spot
-        let placed = false;
-        for (let i = 0; i < countdown_timers.length; i++) {
-            if (!countdown_timers[i]) {
-                countdown_timers[i] = { word, timer: setTimeout(() => moveToReadyArray(i), milliseconds) };
-                placed = true;
-                console.log(`Placed '${word.german}' in countdown_timers at index ${i} at ${new Date().toLocaleTimeString()}.`);
-                break;
-            }
-        }
-
-        // If no spot was found, push to the end
-        if (!placed) {
-            countdown_timers.push({
-                word,
-                timer: setTimeout(() => moveToReadyArray(countdown_timers.length - 1), milliseconds)
-            });
-            console.log(`Placed '${word.german}' at the end of countdown_timers at ${new Date().toLocaleTimeString()}.`);
-        }
+        // Prepend the word to the ready_array
+        ready_array.unshift(word); // This ensures FIFO order for words moving to ready_array
+        console.log(`Word '${word.german}' is now ready for review. Moved to ready_array at ${new Date().toLocaleTimeString()}.`);
+        console.log("Updated ready_array:", ready_array.map(item => item.german));
     } else {
-        console.error("Word not found in current deck.");
+        console.error("Invalid index or no timer found at this index:", index);
     }
-
-    console.log("Current countdown_timers:", countdown_timers.map(item => item ? item.word.german : 'Empty'));
 }
+
+// Ensure to check array's status whenever you modify it
+function displayArrays() {
+    console.log("Current countdown_timers: [" + countdown_timers.map(item => item && item.word ? item.word.german : 'Empty').join(', ') + "]");
+    console.log("Current ready_array: [" + ready_array.map(word => word ? word.german : 'Empty').join(', ') + "]");
+}
+
 
 function moveToReadyArray(index) {
     if (index >= 0 && index < countdown_timers.length && countdown_timers[index]) {
