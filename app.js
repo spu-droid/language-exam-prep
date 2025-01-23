@@ -68,13 +68,13 @@ function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
     document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
-
+	
 }
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
     document.getElementById("word-count").textContent = `Words to learn: ${wordsToLearnCount}`;
-
+	
 }
 
 function displayWord() {
