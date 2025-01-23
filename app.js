@@ -2,9 +2,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
 
-
-
-// Firebase configuration
+// Firebase configuration and initialization
 const firebaseConfig = {
     apiKey: "AIzaSyAU0vkul_XzwI97y9AUBFujN0MDefUnA3A",
     authDomain: "language-exam-prep-6698a.firebaseapp.com",
@@ -16,11 +14,10 @@ const firebaseConfig = {
     measurementId: "G-HLEJ2829GR"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// UI Elements
+// UI Elements setup
 const deckButtons = document.querySelectorAll(".deck-btn");
 const card = document.getElementById("card");
 const wordCount = document.getElementById("word-count");
@@ -32,16 +29,13 @@ const addButton = document.getElementById("add");
 const editButton = document.getElementById("edit");
 const deleteButton = document.getElementById("delete");
 const modeDisplay = document.getElementById("mode");
-export const controlButtons = document.querySelectorAll(".control-btn");
-const switchButton2 = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
-
 
 let currentDeck = [];
 let currentIndex = 0;
 let isGermanFirst = true;
-let mode = "View";  // Default mode
 
+// Handling deck button interactions
 deckButtons.forEach(button => {
     button.addEventListener("click", function() {
         deckButtons.forEach(btn => btn.classList.remove("active"));
@@ -50,15 +44,6 @@ deckButtons.forEach(button => {
     });
 });
 
-
-
-
-function runLearningAlgorithm() {
-    console.log("Learning algorithm is now running.");
-    // Place all the logic for your learning algorithm here.
-    // For example, manage cards, handle review intervals, etc.
-}
-
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
     onValue(wordsRef, snapshot => {
@@ -66,36 +51,11 @@ function fetchWords(deck) {
         currentDeck = Object.entries(data)
             .filter(([key, word]) => word.category && word.category.includes(deck))
             .map(([key, word]) => ({ ...word, id: key }));
-
-        if (learningAlgorithm.mode === "Learn") {
-            filterWordsForLearningMode();
-        } else {
-            currentIndex = 0;
-            displayWord();
-        }
+        currentIndex = 0;
+        displayWord();
     }, {
         onlyOnce: true
     });
-}
-
-function filterWordsForLearningMode() {
-    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }); // Ensuring the date is in dd/mm/yyyy format
-    let foundWord = false;
-
-    for (let i = 0; i < currentDeck.length; i++) {
-        if (currentDeck[i].lock_date !== today) {
-            currentIndex = i;
-            foundWord = true;
-            displayWord();
-            break;
-        }
-    }
-
-    if (!foundWord) {
-        card.innerHTML = "No available words to review today. Please come back tomorrow.";
-        wordCount.textContent = "Words in total: " + currentDeck.length;
-        modeDisplay.textContent = "";
-    }
 }
 
 function displayWord() {
@@ -111,20 +71,7 @@ function displayWord() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    controlButtons.forEach(button => button.disabled = true);  // Disable control buttons initially
-});
-
-showAnswerButton.addEventListener("click", () => {
-    const word = currentDeck[currentIndex];
-    card.innerHTML = `${isGermanFirst ? word.german + ': ' + word.italian : word.italian + ': ' + word.german}`;
-});
-
-switchButton.addEventListener("click", () => {
-    isGermanFirst = !isGermanFirst;
-    displayWord();
-});
-
+// Navigating through cards
 nextButton.addEventListener("click", () => {
     if (currentIndex < currentDeck.length - 1) {
         currentIndex++;
@@ -143,6 +90,7 @@ prevButton.addEventListener("click", () => {
     }
 });
 
+// Managing CRUD operations for flashcards
 addButton.addEventListener("click", () => {
     const italian = prompt("Enter Italian word:");
     const german = prompt("Enter German word:");
@@ -168,77 +116,33 @@ editButton.addEventListener("click", () => {
 });
 
 deleteButton.addEventListener("click", () => {
-    console.log("Clicked delete the word");
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const wordToDelete = currentDeck[currentIndex];
-        console.log("Word to delete:", wordToDelete, "ID:", wordToDelete.id);  // Log the word and its ID
-
-        // Ensure we have the Firebase key to delete the word
-        if (wordToDelete.id) {
-            console.log("Deleting word with ID:", wordToDelete.id);
-            const wordRef = ref(database, `words/${wordToDelete.id}`);
-
-            if (confirm("Are you sure you want to delete this word?")) {
-                remove(wordRef).then(() => {
-                    console.log("Word deleted successfully from Firebase.");
-                    currentDeck.splice(currentIndex, 1);
-                    if (currentIndex >= currentDeck.length) {
-                        currentIndex = currentDeck.length - 1;
-                    }
-                    displayWord();
-                }).catch(error => {
-                    console.error("Failed to delete word:", error);
-                });
-            }
-        } else {
-            console.log("No valid ID found for the word to delete.");
+        if (confirm("Are you sure you want to delete this word?")) {
+            const wordRef = ref(database, `words/${currentDeck[currentIndex].id}`);
+            remove(wordRef).then(() => {
+                console.log("Word deleted successfully.");
+                currentDeck.splice(currentIndex, 1);
+                if (currentIndex >= currentDeck.length) {
+                    currentIndex = currentDeck.length - 1; // Adjust index if needed
+                }
+                displayWord();
+            }).catch(error => {
+                console.error("Failed to delete word:", error);
+            });
         }
     } else {
         console.log("No word selected or deck is empty.");
     }
 });
 
+// Showing the answer
+showAnswerButton.addEventListener("click", () => {
+    const word = currentDeck[currentIndex];
+    card.innerHTML = isGermanFirst ? word.italian + ": " + word.german : word.german + ": " + word.italian;
+});
 
-
-
-const learningAlgorithm = {
-    mode: "View",
-    controlButtons: document.querySelectorAll(".control-btn"),
-    deckData: [],
-    currentIndex: 0,
-    countdownTimers: [],  // This will also track daily visibility blocks
-    resetTimersDaily: [], // Tracks cards to be reset daily
-
-    initialize: function() {
-        this.setupEventListeners();
-        this.toggleMode(false); // Initialize without alert
-    },
-
-    setupEventListeners: function() {
-        const modeSwitchButton = document.getElementById("mode-switch");
-        if (modeSwitchButton) {
-            modeSwitchButton.addEventListener("click", () => this.toggleMode(true)); // Pass true to show alerts
-            console.log("Event listener attached to mode-switch button.");
-        } else {
-            console.error("Mode switch button not found.");
-        }
-
-    },
-
-    toggleMode: function() {
-        console.log("Toggle mode called. Current mode:", this.mode);
-
-        this.mode = (this.mode === "View") ? "Learn" : "View";
-        console.log("New mode after toggle:", this.mode);
-
-        const prevButton = document.getElementById("prev");
-        const nextButton = document.getElementById("next");
-        const modeDisplay2 = document.getElementById("mode2");
-
-        prevButton.disabled = this.mode !== "View";
-        nextButton.disabled = this.mode !== "View";
-        this.controlButtons.forEach(button => button.disabled = this.mode === "View");
-        modeDisplay2.textContent = `Card Mode: ${this.mode}`;
-
-    }
-};
+// Switching the language display
+switchButton.addEventListener("click", () => {
+    isGermanFirst = !isGermanFirst;
+    displayWord();
+});
