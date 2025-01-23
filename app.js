@@ -57,10 +57,12 @@ function fetchWords(deck) {
         currentDeck = Object.entries(data)
             .filter(([key, word]) => word.category && word.category.includes(deck))
             .map(([key, word]) => ({...word, id: key}));
+			
+		learnedWordsCount = currentDeck.filter(word => word.lock_date === new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })).length;
 
         // After fetching and filtering the words, calculate words learned today
         updateWordsLearned();
-
+		updateWordsToLearn()
         currentIndex = 0; // Start from the first word
         displayWord(); // Display the first or next available word
     }, {onlyOnce: true});
@@ -69,8 +71,7 @@ function fetchWords(deck) {
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-	totalWordsInDeck = learnedCount;
-    document.getElementById("words-learned").textContent = `Words learned1: ${totalWordsInDeck}`;             //here
+    document.getElementById("words-learned").textContent = `Words learned1: ${learnedWordsCount}`;             //here
 	
 }
 
@@ -226,7 +227,7 @@ controlButtons.forEach(button => {
                         console.log("Lock date set to today:", today)
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
-				totalWordsInDeck = (totalWordsInDeck - 1)
+				learnedWordsCount++;
 				updateWordsLearned();
                 updateWordsToLearn();
 				displayWord();
