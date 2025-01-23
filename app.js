@@ -90,7 +90,7 @@ function displayWord() {
             } else {
                 // No more words available, handle this case
                 card.innerHTML = "No available words to review today. Please come back tomorrow.";
-                wordCount.textContent = "Words in total: " + currentDeck.length;
+                wordCount.textContent = "Words in total5: " + currentDeck.length;
                 modeDisplay.textContent = "";
                 updateWordsLearned(); // Update learned count even when no words are available
 				updateWordsToLearn();
@@ -106,7 +106,7 @@ function displayWord() {
     } else {
         // Handle case when there are no words in the deck
         card.innerHTML = "No words in this deck! Please select another.";
-        wordCount.textContent = "Words in total: 0";
+        wordCount.textContent = "Words in total9: 0";
         modeDisplay.textContent = "";
         updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
 		updateWordsToLearn();
