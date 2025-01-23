@@ -39,8 +39,7 @@ let isGermanFirst = true;  // Language mode default
 let viewMode = "View";  // Learning mode default
 let countdown_timers = [];
 let ready_array = [];
-let wordsToLearn = 0;
-let learnedWordsCount = 0;
+
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -77,7 +76,7 @@ function updateWordsLearned() {
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
-	wordsToLearn = wordsToLearnCount;
+	const wordsToLearn = wordsToLearnCount;
     document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearn}`;          //here
 	
 }
