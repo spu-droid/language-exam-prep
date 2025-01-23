@@ -34,8 +34,6 @@ const controlButtons = document.querySelectorAll(".control-btn");
 const switchButton2 = document.getElementById("mode-switch");
 const modeDisplay2 = document.getElementById("mode2");
 
-// Correct export
-export const controlButtons = document.querySelectorAll(".control-btn");
 
 let currentDeck = [];
 let currentIndex = 0;
