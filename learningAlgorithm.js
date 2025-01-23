@@ -1,3 +1,5 @@
+import { controlButtons } from '.app.js';
+
 export const learningAlgorithm = {
     mode: "View",
     controlButtons: document.querySelectorAll(".control-btn"),
@@ -46,9 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // you can safely run your DOM manipulations here
     console.log(controlButtons); // this should now work without errors
 });
-
-
-
 
 
 function displayWord() {
