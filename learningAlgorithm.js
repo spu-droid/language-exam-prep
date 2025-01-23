@@ -1,5 +1,4 @@
-// Correct import
-import { controlButtons } from './app.js';
+
 
 const learningAlgorithm = {
     mode: "View",
