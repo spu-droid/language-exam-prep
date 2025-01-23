@@ -1,5 +1,4 @@
-import { ref, onValue, update } from 'firebase/database';
-import { database } from './firebaseConfig';  // Make sure to import your Firebase config correctly
+
 
 export const learningAlgorithm = {
     mode: "View",
