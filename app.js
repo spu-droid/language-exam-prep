@@ -67,13 +67,13 @@ function fetchWords(deck) {
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-    document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
+    document.getElementById("words-learned").textContent = `Words learned1: ${learnedCount}`;
 	
 }
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
-    document.getElementById("word-count").textContent = `Words to learn: ${wordsToLearnCount}`;
+    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearnCount}`;
 	
 }
 
@@ -98,7 +98,7 @@ function displayWord() {
         } else {
             // Display the word if not locked or in View mode
             card.innerHTML = isGermanFirst ? word.german : word.italian;
-            wordCount.textContent = `Words in total: ${currentDeck.length}`;
+            wordCount.textContent = `Words in total3: ${currentDeck.length}`;
             modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
             updateWordsLearned(); // Always update the learned words count on word display
 			updateWordsToLearn();
@@ -123,7 +123,7 @@ switchButton.addEventListener("click", () => {
 modeSwitchButton.addEventListener("click", () => {
     // Toggle the mode between View and Learn
     viewMode = viewMode === "View" ? "Learn" : "View";
-    modeDisplay2.textContent = `Learning Mode: ${viewMode}`;
+    modeDisplay2.textContent = `Learning Mode4: ${viewMode}`;
 
     // Update the enabled state of control and navigation buttons based on the mode
     controlButtons.forEach(button => {
