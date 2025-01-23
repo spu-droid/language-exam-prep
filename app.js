@@ -64,12 +64,8 @@ function fetchWords(deck) {
 
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const learnedCount = currentDeck.reduce((count, word) => {
-        return count + (word.lock_date === today ? 1 : 0);
-    }, 0);
-
-    const wordsLearnedDisplay = document.getElementById("words-learned");
-    wordsLearnedDisplay.textContent = `Words learned: ${learnedCount}`;
+    const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
+    document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
 }
 /*
 // Display the current word
@@ -102,18 +98,21 @@ function displayWord() {
                 card.innerHTML = "No available words to review today. Please come back tomorrow.";
                 wordCount.textContent = "Words in total: " + currentDeck.length;
                 modeDisplay.textContent = "";
+                updateWordsLearned(); // Update learned count even when no words are available
             }
         } else {
             // Display the word if not locked or in View mode
             card.innerHTML = isGermanFirst ? word.german : word.italian;
             wordCount.textContent = `Words in total: ${currentDeck.length}`;
             modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
+            updateWordsLearned(); // Always update the learned words count on word display
         }
     } else {
         // Handle case when there are no words in the deck
         card.innerHTML = "No words in this deck! Please select another.";
         wordCount.textContent = "Words in total: 0";
         modeDisplay.textContent = "";
+        updateWordsLearned(); // Ensure learned count is reset to 0 when no words are in the deck
     }
 }
 
