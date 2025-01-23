@@ -1,5 +1,5 @@
 // Assume the file is using ES modules
-import { controlButtons } from './learningAlgorithm.js';
+import { controlButtons } from './app.js';
 
 export const learningAlgorithm = {
     mode: "View",
