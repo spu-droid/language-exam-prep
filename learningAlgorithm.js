@@ -40,10 +40,13 @@ const learningAlgorithm = {
     }
 };
 
-// DOMContentLoaded listener at the end of the file
+// Import variables from app.js
+import { controlButtons, database } from './app.js';
+
 document.addEventListener("DOMContentLoaded", () => {
-    learningAlgorithm.initialize();
-    console.log("Learning algorithm initialized and ready.");
+    console.log("DOM fully loaded and parsed");
+    // you can safely run your DOM manipulations here
+    console.log(controlButtons); // this should now work without errors
 });
 
 
