@@ -67,13 +67,13 @@ function fetchWords(deck) {
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-    document.getElementById("words-learned").textContent = `Words learned1: ${learnedCount}`;
+    document.getElementById("words-learned").textContent = `Words learned1: ${learnedCount}`;             //here
 	
 }
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
-    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearnCount}`;
+    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearnCount}`;          //here
 	
 }
 
@@ -123,7 +123,7 @@ switchButton.addEventListener("click", () => {
 modeSwitchButton.addEventListener("click", () => {
     // Toggle the mode between View and Learn
     viewMode = viewMode === "View" ? "Learn" : "View";
-    modeDisplay2.textContent = `Learning Mode4: ${viewMode}`;
+    modeDisplay2.textContent = `Learning Mode: ${viewMode}`;
 
     // Update the enabled state of control and navigation buttons based on the mode
     controlButtons.forEach(button => {
@@ -225,6 +225,7 @@ controlButtons.forEach(button => {
                     .catch(error => console.error("Failed to set lock date:", error));
 				updateWordsLearned();
                 updateWordsToLearn();
+				displayWord();
             } else if (difficulty === "again") {
                 console.log("Again button pressed");
                 sendToQue(wordId, 1); // 1 minute
