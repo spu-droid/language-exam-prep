@@ -174,6 +174,7 @@ controlButtons.forEach(button => {
             update(wordRef, { lock_date: today })
                 .then(() => console.log("Lock date set to today:", today))
                 .catch(error => console.error("Failed to set lock date:", error));
+			learningFlashcards(deck);
         } else if (button.getAttribute("data-difficulty") === "again") {
             console.log("Again button pressed");
             // Implement the action for "again"
