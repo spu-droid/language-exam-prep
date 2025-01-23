@@ -39,7 +39,7 @@ let isGermanFirst = true;  // Language mode default
 let viewMode = "View";  // Learning mode default
 let countdown_timers = [];
 let ready_array = [];
-let totalWordsInDeck = 0;
+let wordsToLearn = 0;
 let learnedWordsCount = 0;
 
 // Event Listeners
@@ -77,7 +77,8 @@ function updateWordsLearned() {
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
-    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearnCount}`;          //here
+	wordsToLearn = wordsToLearnCount;
+    document.getElementById("word-count").textContent = `Words to learn2: ${wordsToLearn}`;          //here
 	
 }
 
@@ -228,6 +229,7 @@ controlButtons.forEach(button => {
                     })
                     .catch(error => console.error("Failed to set lock date:", error));
 				learnedWordsCount++;
+				wordsToLearn--;
 				updateWordsLearned();
                 updateWordsToLearn();
 				displayWord();
