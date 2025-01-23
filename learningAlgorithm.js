@@ -40,8 +40,6 @@ export const learningAlgorithm = {
     }
 };
 
-// Import variables from app.js
-import { controlButtons } from './app.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded and parsed");

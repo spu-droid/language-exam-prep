@@ -1,7 +1,6 @@
 // Firebase imports
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getDatabase, ref, onValue, remove, push, update } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
-import { learningAlgorithm } from './learningAlgorithm.js';
 
 // Firebase configuration
 const firebaseConfig = {
