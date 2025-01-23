@@ -58,6 +58,7 @@ function fetchWords(deck) {
     }, {onlyOnce: true});
 }
 
+/*
 // Display the current word
 function displayWord() {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
@@ -66,6 +67,37 @@ function displayWord() {
         wordCount.textContent = `Words in total: ${currentDeck.length}`;
         modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     } else {
+        card.innerHTML = "No words in this deck! Please select another.";
+        wordCount.textContent = "Words in total: 0";
+        modeDisplay.textContent = "";
+    }
+}
+*/
+
+function displayWord() {
+    if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
+        const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const word = currentDeck[currentIndex];
+
+        // Check if we're in Learn mode and the word is locked for today
+        if (viewMode === "Learn" && word.lock_date === today) {
+            currentIndex++; // Move to the next word
+            if (currentIndex < currentDeck.length) {
+                displayWord(); // Recursively call to find an available word
+            } else {
+                // No more words available, handle this case
+                card.innerHTML = "No available words to review today. Please come back tomorrow.";
+                wordCount.textContent = "Words in total: " + currentDeck.length;
+                modeDisplay.textContent = "";
+            }
+        } else {
+            // Display the word if not locked or in View mode
+            card.innerHTML = isGermanFirst ? word.german : word.italian;
+            wordCount.textContent = `Words in total: ${currentDeck.length}`;
+            modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
+        }
+    } else {
+        // Handle case when there are no words in the deck
         card.innerHTML = "No words in this deck! Please select another.";
         wordCount.textContent = "Words in total: 0";
         modeDisplay.textContent = "";
@@ -96,6 +128,12 @@ modeSwitchButton.addEventListener("click", () => {
 	if (viewMode === "Learn") {
         currentIndex = 0;  // Set currentIndex to 0 to start from the first card
         displayWord();     // Display the first word of the current deck
+    }
+	
+	// Reload the first word in Learn mode to apply date filtering
+    if (viewMode === "Learn" && currentDeck.length > 0) {
+        currentIndex = 0; // Reset to start
+        displayWord(); // Display with new filtering logic
     }
 });
 
