@@ -162,4 +162,16 @@ deleteButton.addEventListener("click", () => {
 });
 
 
+function displayWord() {
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        card.innerHTML = isGermanFirst ? word.german : word.italian;
+        wordCount.textContent = `Words in total: ${currentDeck.length}`;
+        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
+    } else {
+        card.innerHTML = "No words in this deck! Please select another.";
+        wordCount.textContent = "Words in total: 0";
+        modeDisplay.textContent = "";
+    }
+}
 
