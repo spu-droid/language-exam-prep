@@ -74,7 +74,7 @@ button.active {
     margin: auto; /* Centers the card horizontally on the page */
 }
 
-#mode, #mode2, #word-count, #words-learned {
+#mode, #mode2, #word-count, #words-learned #words-to-learn {
     text-align: center;
     color: #333;
     font-size: 0.9rem;
