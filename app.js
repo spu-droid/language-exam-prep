@@ -68,27 +68,14 @@ function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
     document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
+	wordCount.textContent = `Words learned: ${learnedCount}`;
 }
 
 function updateWordsToLearn() {
     const wordsToLearnCount = currentDeck.length;
     document.getElementById("word-count").textContent = `Words to learn: ${wordsToLearnCount}`;
+	wordsToLearnCount.textContent = `Words learned: ${wordsToLearnCount}`;
 }
-/*
-// Display the current word
-function displayWord() {
-    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const word = currentDeck[currentIndex];
-        card.innerHTML = isGermanFirst ? word.german : word.italian;
-        wordCount.textContent = `Words in total: ${currentDeck.length}`;
-        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
-    } else {
-        card.innerHTML = "No words in this deck! Please select another.";
-        wordCount.textContent = "Words in total: 0";
-        modeDisplay.textContent = "";
-    }
-}
-*/
 
 function displayWord() {
     if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
