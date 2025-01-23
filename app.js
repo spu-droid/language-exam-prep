@@ -226,6 +226,7 @@ controlButtons.forEach(button => {
             update(ref(database, `words/${wordId}`), { lock_date: today })
                 .then(() => console.log("Lock date set to today:", today))
                 .catch(error => console.error("Failed to set lock date:", error));
+			updateWordsLearned();
         } else if (difficulty === "again") {
             console.log("Again button pressed");
             sendToQue(wordId, 1); // 1 minute
