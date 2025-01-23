@@ -283,7 +283,7 @@ function processTimers() {
 }
 
 // Example function call to simulate processing at intervals or triggered by a user action
-// setInterval(processTimers, 1000); // This could be a setInterval if you want to process periodically
+setInterval(processTimers, 1000); // This could be a setInterval if you want to process periodically
 
 
 
