@@ -78,16 +78,6 @@ switchButton.addEventListener("click", () => {
     displayWord();
 });
 
-// Toggle learning mode
-// UI Elements
-const modeSwitchButton = document.getElementById("mode-switch");
-const modeDisplay2 = document.getElementById("mode2");
-const controlButtons = document.querySelectorAll(".control-btn"); // Control buttons like Again, Hard, Good, Easy
-const prevButton = document.getElementById("prev");
-const nextButton = document.getElementById("next");
-
-let viewMode = "View"; // Default mode is View
-
 // Event listener for the mode switch button
 modeSwitchButton.addEventListener("click", () => {
     // Toggle the mode between View and Learn
