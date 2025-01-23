@@ -52,7 +52,7 @@ function updateUIForMode() {
 }
 
 // Setup the event listener for the mode switch button
-modeSwitchButton.addEventListener("click", () => {
+mode2.addEventListener("click", () => {
     mode = mode === "View" ? "Learn" : "View";
     updateUIForMode();
 });
