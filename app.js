@@ -42,6 +42,7 @@ let ready_array = [];
 let totalWordsInDeck = 0;
 let learnedWordsCount = 0;
 let countdown_queue = [];
+let wordIndex = 0;
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -120,7 +121,7 @@ function displayWord() {
 			}
 			currentIndex = wordPosition;
 			
-			const wordIndex = currentDeck.findIndex(word => word.id === wordId);
+			wordIndex = currentDeck.findIndex(word => word.id === wordId);
 			console.log("Removed and retrieved word:", word.german); // Assuming the word object has a 'german' property
 			// Display the word that is in repetition
             card.innerHTML = isGermanFirst ? word.german : word.italian;
