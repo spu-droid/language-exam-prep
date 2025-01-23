@@ -40,7 +40,6 @@ export const learningAlgorithm = {
     }
 };
 
-export { controlButtons };
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded and parsed");

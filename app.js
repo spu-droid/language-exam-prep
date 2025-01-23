@@ -87,6 +87,26 @@ function displayWord() {
     }
 }
 
+function learningFlashcards(deck) {
+    const wordsRef = ref(database, 'words');
+    onValue(wordsRef, snapshot => {
+        const data = snapshot.val();
+        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
+        currentIndex = 0;
+        nextAvailableWord();
+    }, {
+        onlyOnce: true
+    });
+}
+
+function nextAvailableWord() {
+    const today = new Date().toLocaleDateString('en-GB');
+    while (currentIndex < currentDeck.length && currentDeck[currentIndex].lock_date === today) {
+        currentIndex++; // Skip the word locked for today
+    }
+    displayWord(); // Display the next available word
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     controlButtons.forEach(button => button.disabled = true);  // Disable control buttons initially
 });
@@ -206,22 +226,3 @@ controlButtons.forEach(button => {
     });
 });
 
-function learningFlashcards(deck) {
-    const wordsRef = ref(database, 'words');
-    onValue(wordsRef, snapshot => {
-        const data = snapshot.val();
-        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
-        currentIndex = 0;
-        nextAvailableWord();
-    }, {
-        onlyOnce: true
-    });
-}
-
-function nextAvailableWord() {
-    const today = new Date().toLocaleDateString('en-GB');
-    while (currentIndex < currentDeck.length && currentDeck[currentIndex].lock_date === today) {
-        currentIndex++; // Skip the word locked for today
-    }
-    displayWord(); // Display the next available word
-}
