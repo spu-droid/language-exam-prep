@@ -246,27 +246,26 @@ controlButtons.forEach(button => {
 });
 
 function sendToQue(wordId, minutes) {
-    const milliseconds = minutes * 60 * 1000;  // Convert minutes to milliseconds
+    const milliseconds = minutes * 60 * 1000; // Convert minutes to milliseconds
     const wordIndex = currentDeck.findIndex(word => word.id === wordId);
 
     if (wordIndex > -1) {
         let word = currentDeck[wordIndex];
-        word.lock_date = "inPool";  // Set lock status to "inPool"
+        word.lock_date = "inPool"; // Set lock status to "inPool"
 
-        // Find the first available spot in the countdown timers or add to the end
+        // Find the first available spot in the countdown timers
         let placed = false;
         for (let i = 0; i < countdown_timers.length; i++) {
             if (!countdown_timers[i]) {
                 countdown_timers[i] = { word, timer: setTimeout(() => finishCountdown(i), milliseconds) };
                 placed = true;
-                console.log(`Word ${word.id} placed in countdown slot ${i}.`);
                 break;
             }
         }
+        // If no spot was available, push to the end
         if (!placed) {
-            let newIndex = countdown_timers.length;
-            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(newIndex), milliseconds) });
-            console.log(`Countdown full, word ${word.id} added to new slot ${newIndex}.`);
+            countdown_timers.push({ word, timer: setTimeout(() => finishCountdown(countdown_timers.length), milliseconds) });
+            console.log(`[${new Date().toLocaleTimeString()}] No available spot was found. Pushing to end of countdown_timers array.`);
         }
     } else {
         console.error("Word not found in current deck.");
@@ -275,7 +274,7 @@ function sendToQue(wordId, minutes) {
 
 function finishCountdown(index) {
     let word = countdown_timers[index].word;
-    countdown_timers[index] = null;  // Free up the slot
-    ready_array.push(word);  // Add to ready_array
-    console.log(`Word ${word.id} with German: ${word.german} is now ready for review again.`);
+    countdown_timers[index] = null; // Free up the slot
+    ready_array.push(word); // Add to ready_array
+    console.log(`[${new Date().toLocaleTimeString()}] Word ${word.id} with German: ${word.german} is now ready for review again.`);
 }
