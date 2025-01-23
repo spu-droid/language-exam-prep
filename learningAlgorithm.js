@@ -1,4 +1,4 @@
-import { controlButtons } from '.app.js';
+
 
 export const learningAlgorithm = {
     mode: "View",
@@ -42,7 +42,7 @@ export const learningAlgorithm = {
     }
 };
 
-export { learningAlgorithm, controlButtons };
+export { controlButtons };
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded and parsed");
