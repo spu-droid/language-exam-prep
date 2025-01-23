@@ -74,39 +74,6 @@ function fetchWords(deck) {
     });
 }
 
-function displayWord() {
-    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
-        const word = currentDeck[currentIndex];
-        card.innerHTML = isGermanFirst ? word.german : word.italian;
-        wordCount.textContent = `Words in total: ${currentDeck.length}`;
-        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
-    } else {
-        card.innerHTML = "No words in this deck! Please select another.";
-        wordCount.textContent = "Words in total: 0";
-        modeDisplay.textContent = "";
-    }
-}
-
-function learningFlashcards(deck) {
-    const wordsRef = ref(database, 'words');
-    onValue(wordsRef, snapshot => {
-        const data = snapshot.val();
-        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
-        currentIndex = 0;
-        nextAvailableWord();
-    }, {
-        onlyOnce: true
-    });
-}
-
-function nextAvailableWord() {
-    const today = new Date().toLocaleDateString('en-GB');
-    while (currentIndex < currentDeck.length && currentDeck[currentIndex].lock_date === today) {
-        currentIndex++; // Skip the word locked for today
-    }
-    displayWord(); // Display the next available word
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     controlButtons.forEach(button => button.disabled = true);  // Disable control buttons initially
 });
@@ -226,3 +193,50 @@ controlButtons.forEach(button => {
     });
 });
 
+
+
+function displayWord() {
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        card.innerHTML = isGermanFirst ? word.german : word.italian;
+        wordCount.textContent = `Words in total: ${currentDeck.length}`;
+        modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
+    } else {
+        card.innerHTML = "No words in this deck! Please select another.";
+        wordCount.textContent = "Words in total: 0";
+        modeDisplay.textContent = "";
+    }
+}
+
+function learningFlashcards(deck) {
+    const wordsRef = ref(database, 'words');
+    onValue(wordsRef, snapshot => {
+        const data = snapshot.val();
+        currentDeck = Object.entries(data).filter(([key, word]) => word.category && word.category.includes(deck)).map(([key, word]) => ({...word, id: key}));
+        currentIndex = 0;
+        nextAvailableWord();
+    }, {
+        onlyOnce: true
+    });
+}
+
+function nextAvailableWord() {
+    const today = new Date().toLocaleDateString('en-GB');
+    let foundWord = false;
+
+    while (currentIndex < currentDeck.length && !foundWord) {
+        if (currentDeck[currentIndex].lock_date !== today) {
+            foundWord = true; // Find the first available word that is not locked
+            displayWord(); // Display the next available word
+        } else {
+            currentIndex++; // Skip the word locked for today
+        }
+    }
+
+    if (!foundWord) {
+        // No words are available to review today
+        card.innerHTML = "No available words to review today. Please come back tomorrow.";
+        wordCount.textContent = "Words in total: " + currentDeck.length;
+        modeDisplay.textContent = "";
+    }
+}
