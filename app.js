@@ -108,7 +108,7 @@ function displayWord() {
 			const wordId = word.id; // Replace 'yourSpecificWordId' with the actual ID you have
 
 			// Finding the index of the word in the currentDeck
-			const wordIndex = currentDeck.findIndex(word => word.id === wordId);
+			wordIndex = currentDeck.findIndex(word => word.id === wordId);
 
 			if (wordIndex !== -1) {
 				// Convert zero-based index to one-based index
