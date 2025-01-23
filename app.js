@@ -67,7 +67,14 @@ function fetchWords(deck) {
 function updateWordsLearned() {
     const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const learnedCount = currentDeck.reduce((count, word) => count + (word.lock_date === today ? 1 : 0), 0);
-    document.getElementById("words-learned").textContent = `Words learned: ${learnedCount}`;
+    const wordsLearnedElement = document.getElementById("words-learned");
+
+    if (wordsLearnedElement) {
+        wordsLearnedElement.textContent = `Words learned: ${learnedCount}`;
+        console.log(`Updated words learned to ${learnedCount}`); // Log to verify it's being updated
+    } else {
+        console.error('Failed to find the element with ID "words-learned" to update words learned count.');
+    }
 }
 /*
 // Display the current word
