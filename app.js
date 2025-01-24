@@ -51,6 +51,24 @@ deckButtons.forEach(button => button.addEventListener("click", function() {
     fetchWords(this.getAttribute("data-deck"));
 }));
 
+document.addEventListener('keydown', function(event) {
+   if (event.keyCode === 32) {  // 32 is the keycode for the spacebar
+        event.preventDefault();  // Prevent the default action to stop scrolling the page
+        showAnswerButton.click();  // Simulate clicking the "Show Answer" button
+    }
+
+   // Check if the left arrow key (key code 37) is pressed
+    if (event.keyCode === 37) {
+        // Mimic a click on the prevButton
+        prevButton.click();
+    }
+	// Check if the right arrow key (key code 39) is pressed
+    if (event.keyCode === 39) {
+        // Mimic a click on the nextButton
+        nextButton.click();
+    }
+});
+
 // Fetch words for the selected deck
 function fetchWords(deck) {
     const wordsRef = ref(database, 'words');
@@ -83,13 +101,6 @@ function updateWordsToLearn() {
     document.getElementById("word-count").textContent = `Words to learn: ${wordsToLearnCount}`;          //here
 	
 }
-
-document.addEventListener('keydown', function(event) {
-    if (event.keyCode === 32) {  // 32 is the keycode for the spacebar
-        event.preventDefault();  // Prevent the default action to stop scrolling the page
-        showAnswerButton.click();  // Simulate clicking the "Show Answer" button
-    }
-});
 
 function displayWord() {
     let word;
