@@ -70,7 +70,7 @@ button.active {
     border: 1px solid #ccc;
     padding: 20px;
     min-height: 100px; /* Adjust this if needed */
-    width: 60%;
+    width: 120%;
     margin: auto; /* Centers the card horizontally on the page */
 }
 
