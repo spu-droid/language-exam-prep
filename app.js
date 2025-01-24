@@ -140,7 +140,11 @@ function displayWord() {
 }
 
 function updateDisplay(word) {
-    card.innerHTML = isGermanFirst ? word.german : word.italian;
+    let displayText = isGermanFirst ? word.german : word.italian;
+    // Replace | with HTML line breaks to display each part on a new line
+    displayText = displayText.replace(/\|/g, '<br>');
+
+    card.innerHTML = displayText;
     wordCount.textContent = `Words in total: ${currentDeck.length}`;
     modeDisplay.textContent = `Mode: ${isGermanFirst ? 'DE-IT' : 'IT-DE'}`;
     updateWordsLearned();
