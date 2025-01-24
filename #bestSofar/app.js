@@ -84,12 +84,6 @@ function updateWordsToLearn() {
 	
 }
 
-document.addEventListener('keydown', function(event) {
-    if (event.keyCode === 32) {  // 32 is the keycode for the spacebar
-        event.preventDefault();  // Prevent the default action to stop scrolling the page
-        showAnswerButton.click();  // Simulate clicking the "Show Answer" button
-    }
-});
 
 function displayWord() {
     let word;
