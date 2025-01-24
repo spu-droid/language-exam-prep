@@ -249,7 +249,12 @@ deleteButton.addEventListener("click", () => {
 showAnswerButton.addEventListener("click", () => {
     if (currentDeck.length > 0 && currentDeck[currentIndex]) {
         const word = currentDeck[currentIndex];
-        card.innerHTML = isGermanFirst ? word.german + ": " + word.italian : word.italian + ": " + word.german;
+        let displayText = isGermanFirst ? word.german + ": " + word.italian : word.italian + ": " + word.german;
+        
+        // Apply the replacement of '|' with '<br>' to ensure consistent new line formatting
+        displayText = displayText.replace(/\|/g, '<br>');
+        
+        card.innerHTML = displayText;
     }
 });
 
