@@ -43,9 +43,6 @@ let totalWordsInDeck = 0;
 let learnedWordsCount = 0;
 let countdown_queue = [];
 let wordIndex = 0;
-let lastWordFromReadyArray = false; // This flag indicates if the last word displayed was from the ready_array
-let lastDisplayedWord = null; // This will store the last word displayed
-
 
 // Event Listeners
 deckButtons.forEach(button => button.addEventListener("click", function() {
@@ -111,19 +108,16 @@ function displayWord() {
     // Check for words in ready_array first
     if (ready_array.length > 0) {
         word = ready_array.pop();
-		lastWordFromReadyArray = true; // Set flag to true because we are displaying a word from ready_array
         if (!word) {
             console.error("Empty or invalid word popped from ready_array");
             return; // Exit function if no valid word to display
         }
         // Update the display with the word from ready_array
-		lastDisplayedWord = word; // Store the last displayed word
         updateDisplay(word);
         return; // Exit function after displaying the ready word
     }
 
     // Handle normal flow from currentDeck
-	lastWordFromReadyArray = false; // Set flag to false because we are displaying a word from currentDeck
     if (currentDeck.length > 0 && currentIndex < currentDeck.length) {
         word = currentDeck[currentIndex];
         const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -137,7 +131,6 @@ function displayWord() {
                 resetDisplay();
             }
         } else {
-			lastDisplayedWord = word; // Store the last displayed word
             updateDisplay(word); // Display the current word
         }
     } else {
@@ -252,16 +245,16 @@ deleteButton.addEventListener("click", () => {
     }
 });
 
-// Updated "Show Answer" event listener using lastDisplayedWord
+// Showing answer
 showAnswerButton.addEventListener("click", () => {
-    if (lastDisplayedWord) {
-        // Determine display text based on current language mode
-        let displayText = isGermanFirst ? lastDisplayedWord.german + ": " + lastDisplayedWord.italian : lastDisplayedWord.italian + ": " + lastDisplayedWord.german;
-        // Apply formatting for line breaks
-        displayText = displayText.replace(/\|/g, '<br>'); // Replace '|' with '<br>' for new lines
+    if (currentDeck.length > 0 && currentDeck[currentIndex]) {
+        const word = currentDeck[currentIndex];
+        let displayText = isGermanFirst ? word.german + ": " + word.italian : word.italian + ": " + word.german;
+        
+        // Apply the replacement of '|' with '<br>' to ensure consistent new line formatting
+        displayText = displayText.replace(/\|/g, '<br>');
+        
         card.innerHTML = displayText;
-    } else {
-        card.innerHTML = "No word available to show!"; // Display a message if no word is available
     }
 });
 
